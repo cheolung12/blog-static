@@ -1,4 +1,5 @@
-import Nav from '@/components/Nav';
+import Footer from '@/components/Footer';
+import Header from '@/components/Header';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
@@ -17,9 +18,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='en'>
-      <body className={inter.className}>
-        <Nav />
-        <main>{children}</main>
+      <body
+        className={`${inter.className} flex flex-col h-screen w-screen overflow-y-auto`}
+      >
+        <Header />
+        <div className={`flex flex-col w-[900px] mx-auto mt-32`}>
+          <main className='w-full'>{children}</main>
+        </div>
+      <Footer />
       </body>
     </html>
   );

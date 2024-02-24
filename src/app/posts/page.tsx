@@ -8,7 +8,7 @@ const sortedPosts = allPosts.sort(
 export default async function page() {
 
   return (
-    <div className={`mt-10 flex flex-col`}>
+    <div className={`flex flex-col`}>
       {sortedPosts.map((post) => (
           <PostCard
             date={post.date}
@@ -16,6 +16,7 @@ export default async function page() {
             des={post.description}
             slug={post._raw.flattenedPath}
             key={post._id}
+            thumbnail={post.thumbnail}
           />
         ))}
     </div>
