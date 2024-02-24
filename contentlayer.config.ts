@@ -2,6 +2,7 @@ import { defineDocumentType, makeSource } from 'contentlayer/source-files';
 import rehypeCodeTitles from 'rehype-code-titles';
 import rehypePrettyCode from 'rehype-pretty-code';
 import remarkGfm from 'remark-gfm';
+import remarkToc from 'remark-toc';
 
 const Post = defineDocumentType(() => ({
   name: 'Post',
@@ -26,7 +27,16 @@ const contentSource = makeSource({
   contentDirPath: 'posts',
   documentTypes: [Post],
   mdx: {
-    remarkPlugins: [remarkGfm],
+    remarkPlugins: [
+      remarkGfm,
+      [
+        remarkToc,
+        {
+          heading: '목차',
+          maxDepth: 3,
+        },
+      ],
+    ],
     rehypePlugins: [rehypeCodeTitles, [rehypePrettyCode, rehypeOptions]],
   },
 });

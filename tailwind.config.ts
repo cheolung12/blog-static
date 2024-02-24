@@ -20,6 +20,7 @@ const config: Config = {
             maxWidth: 'none',
             h1: {
               fontSize: '2rem',
+              marginTop: '1rem'
             },
             code: {
               '&::before': {

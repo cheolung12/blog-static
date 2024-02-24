@@ -2,26 +2,34 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 스크롤바 숨기기 => 필요하면 사용 */
 .hide-scrollbar::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Opera */
+  display: none; /* Chrome, Safari, Opera */
 }
 
+/* 코드 블럭 타이틀 */
 .rehype-code-title {
-    margin-bottom: -0.6rem;
-    padding: 0.4em 1em 0.8em 1em;
-    font-family: Consolas, 'Andale Mono WT', 'Andale Mono', 'Lucida Console',
-      'Lucida Sans Typewriter', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono',
-      'Liberation Mono', 'Nimbus Mono L', Monaco, 'Courier New', Courier,
-      monospace;
+  margin-bottom: -0.6rem;
+  padding: 0.4em 1em 0.8em 1em;
+  font-family: Consolas, 'Andale Mono WT', 'Andale Mono', 'Lucida Console',
+    'Lucida Sans Typewriter', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono',
+    'Liberation Mono', 'Nimbus Mono L', Monaco, 'Courier New', Courier,
+    monospace;
 
-    background-color: #4f555c;
-    color: white;
-    z-index: 0;
-  
-    border-top-left-radius: 0.3em;
-    border-top-right-radius: 0.3em;
-  }
+  background-color: #4f555c;
+  color: white;
+  z-index: 0;
 
-  .github-dark {
-    margin-top: 0px;
-  }
+  border-top-left-radius: 0.3em;
+  border-top-right-radius: 0.3em;
+}
+
+/* 코드 블럭 */
+.github-dark {
+  margin-top: 0px;
+}
+
+/* ToC */
+.prose :where(h2 + *):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+  margin-bottom: 70px;
+}
