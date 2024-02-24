@@ -7,6 +7,8 @@
   display: none; /* Chrome, Safari, Opera */
 }
 
+
+/* markdown CSS */
 /* 코드 블럭 타이틀 */
 .rehype-code-title {
   margin-bottom: -0.6rem;
@@ -32,4 +34,23 @@
 /* ToC */
 .prose :where(h2 + *):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
   margin-bottom: 70px;
+}
+
+/* anchor */
+.prose .anchor {
+  @apply invisible absolute no-underline;
+
+  margin-left: -1em;
+  padding-right: 0.5em;
+  cursor: pointer;
+}
+
+.prose .anchor:after {
+  @apply text-gray-300 dark:text-gray-700;
+  content: '#';
+}
+
+.anchor:hover,
+.prose *:hover > .anchor {
+  @apply visible;
 }

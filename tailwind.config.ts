@@ -22,6 +22,9 @@ const config: Config = {
               fontSize: '2rem',
               marginTop: '1rem'
             },
+            'h1,h2,h3,h4': {
+              'scroll-margin-top': theme('spacing.32'),
+            },
             code: {
               '&::before': {
                 content: '"" !important',
