@@ -1,3 +1,4 @@
+import Giscus from '@/components/Giscus';
 import { allPosts } from 'contentlayer/generated';
 import { format } from 'date-fns';
 import { useMDXComponent } from 'next-contentlayer/hooks';
@@ -32,10 +33,11 @@ export default function Posts({ params }) {
           className='h-auto w-full mb-8'
         />
 
-      <div className='prose'>
+      <div className='prose mb-12'>
         <MDXComponent className='min-w-full' />
       </div>
-
+      
+      <Giscus />
     </div>
   );
 }
