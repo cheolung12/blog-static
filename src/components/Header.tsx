@@ -8,7 +8,7 @@ import ScrollProgressBar from './ScrollProgressBar';
 
 const Header: FC = () => {
   const pathname = usePathname()
-  const isProgressBar = pathname.includes('/posts/') && pathname.split('/').length === 3;
+  const isProgressBar = pathname.includes('/posts/') && pathname.split('/').length >= 3;
 
   return (
     <div className='fixed w-full z-99'>
