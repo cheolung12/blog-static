@@ -1,9 +1,15 @@
+'use client';
+
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { FC } from 'react';
 import Nav from './Nav';
 import ScrollProgressBar from './ScrollProgressBar';
 
 const Header: FC = () => {
+  const pathname = usePathname()
+  const isProgressBar = pathname.includes('/posts/') && pathname.split('/').length === 3;
+
   return (
     <div className='fixed w-full z-99'>
       <header
@@ -16,7 +22,7 @@ const Header: FC = () => {
         </Link>
         <Nav />
       </header>
-      <ScrollProgressBar />
+      {isProgressBar && <ScrollProgressBar />}
     </div>
   );
 };
