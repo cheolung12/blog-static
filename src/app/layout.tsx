@@ -19,10 +19,10 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body
-        className={`${inter.className} flex flex-col h-screen w-screen overflow-y-auto`}
+        className={`${inter.className} flex flex-col justify-between h-screen w-screen overflow-y-auto`}
       >
         <Header />
-        <div className={`flex flex-col w-[900px] mx-auto mt-32`}>
+        <div className={`flex flex-col w-[840px] mx-auto mt-32 mb-12`}>
           <main className='w-full'>{children}</main>
         </div>
       <Footer />

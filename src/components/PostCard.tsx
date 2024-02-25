@@ -13,14 +13,14 @@ type PostCardProps = {
 
 const PostCard: FC<PostCardProps> = ({date, title, des, slug, thumbnail}) => {
   return (
-    <Link href={`/posts/${slug}`} className={`flex hover:bg-slate-100 gap-4 p-4 rounded-sm`}>
-    <div className='relative aspect-[1.8/1] w-[300px]'>
+    <Link href={`/posts/${slug}`} className={`flex hover:bg-slate-100 gap-10 p-4 rounded-sm`}>
+    <div className='relative aspect-[1.8/1] w-[340px]'>
         <Image
           src={thumbnail}
           fill // 상위 요소 크기에 맞춰서 자동 지정
           alt={title}
           sizes='360px'
-          className='object-cover'
+          className='object-cover z-0'
           priority
         />
       </div>
@@ -31,7 +31,7 @@ const PostCard: FC<PostCardProps> = ({date, title, des, slug, thumbnail}) => {
             {format(new Date(date), 'yyyy-MM-d')}
           </span>
         </div>
-        <div className='line-clamp-3 font-medium text-gray-600 text-xl mt-1'>{des}</div>
+        <div className='line-clamp-1 font-medium text-gray-600 text-lg mt-4'>{des}</div>
       </div>
   </Link>
   );

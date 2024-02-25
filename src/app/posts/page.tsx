@@ -8,7 +8,7 @@ const sortedPosts = allPosts.sort(
 export default async function page() {
 
   return (
-    <div className={`flex flex-col`}>
+    <div className={`flex flex-col gap-2`}>
       {sortedPosts.map((post) => (
           <PostCard
             date={post.date}
