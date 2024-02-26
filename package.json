@@ -23,7 +23,8 @@
     "rehype-pretty-code": "^0.10.0",
     "rehype-slug": "^6.0.0",
     "remark-toc": "^9.0.0",
-    "shiki": "^0.14.3"
+    "shiki": "^0.14.3",
+    "zustand": "^4.5.1"
   },
   "devDependencies": {
     "@contentlayer/source-files": "^0.3.4",

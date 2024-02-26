@@ -1,24 +1,25 @@
-import PostCard from '@/components/PostCard';
-import { allPosts } from "contentlayer/generated";
+'use client';
 
-const sortedPosts = allPosts.sort(
-  (a, b) => Number(new Date(b.date)) - Number(new Date(a.date))
-);
+import CategoryFilter from '@/components/CategoryFilter';
+import PostList from '@/components/PostList';
+import { useCategoryStore } from '@/lib/store';
+import { allPosts } from 'contentlayer/generated';
 
-export default async function page() {
+const categories =  ['All', ...Array.from(new Set(allPosts.map((p) => p.category)))];
+export default function page() {
+  const sortedPosts = useCategoryStore((state) => state.sortedPosts);
+  const category = useCategoryStore((state) => state.selected);
 
   return (
-    <div className={`flex flex-col gap-2`}>
-      {sortedPosts.map((post) => (
-          <PostCard
-            date={post.date}
-            title={post.title}
-            des={post.description}
-            slug={post._raw.flattenedPath}
-            key={post._id}
-            thumbnail={post.thumbnail}
-          />
-        ))}
+    <div className={`flex flex-col`}>
+      <div className={`flex flex-col justify-center items-center gap-2 mb-4`}>
+        <div className='text-4xl font-medium'>{category}</div>
+        <div className='text-2xl font-light'>{sortedPosts.length} posts</div>
+      </div>
+      <CategoryFilter categories={categories} />
+      <div className={`flex flex-col gap-2`}>
+        <PostList sortedPosts={sortedPosts} />
+      </div>
     </div>
   );
 }
