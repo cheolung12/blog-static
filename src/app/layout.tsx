@@ -22,7 +22,7 @@ export default function RootLayout({
         className={`${inter.className} flex flex-col justify-between h-screen w-screen overflow-y-auto`}
       >
         <Header />
-        <div className={`flex flex-col w-[840px] mx-auto mt-32 mb-12`}>
+        <div className={`flex flex-col flex-grow w-[840px] mx-auto mt-24 mb-12`}>
           <main className='w-full'>{children}</main>
         </div>
       <Footer />
