@@ -1,29 +1,20 @@
 'use client';
 
-import Link from 'next/link';
+import { useCategoryStore } from '@/lib/store';
 import { FC } from 'react';
+import AnimationProvider from './AnimationProvider';
+import PostList from './PostList';
 
 const RecentPosts: FC = () => {
+  const sortedPosts = useCategoryStore((state) => state.sortedPosts).slice(0,3);
+
   return (
-    <div className={`mt-10`}>
-      <h1 className={`text-3xl font-extrabold`}>최근 게시물</h1>
+    <AnimationProvider className={`mt-10`}>
+      <h1 className={`text-3xl font-bold mb-8`}>📬 Recent Posts</h1>
       <div className={`flex flex-col`}>
-        <Link href="/" passHref>
-          <div className="mt-5">
-            <div className={`font-medium text-xl`}>
-              게시물 제목이 나타납니다.
-            </div>
-            <div className={`font-light`}>게시물 설명이 나타납니다.</div>
-          </div>
-        </Link>
-        <Link href="/" passHref>
-          <div className="mt-5">
-            <div className={`font-medium text-xl`}>Hello!</div>
-            <div className={`font-light`}>안녕하세요.</div>
-          </div>
-        </Link>
+        <PostList sortedPosts={sortedPosts} />
       </div>
-    </div>
+    </AnimationProvider>
   );
 }
 
