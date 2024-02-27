@@ -1,9 +1,10 @@
+import Intro from '@/components/Intro';
 import RecentPosts from '@/components/RecentPosts';
 
 export default function Home() {
   return (
     <main>
-      <div className={`font-bold`}>HOME</div>
+      <Intro />
       <RecentPosts />
     </main>
   );

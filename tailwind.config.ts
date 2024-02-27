@@ -23,7 +23,7 @@ const config: Config = {
             maxWidth: 'none',
             h1: {
               fontSize: '2rem',
-              marginTop: '1rem'
+              marginTop: '4rem'
             },
             'h1,h2,h3,h4': {
               'scroll-margin-top': theme('spacing.32'),

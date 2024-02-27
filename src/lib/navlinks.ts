@@ -1,7 +1,7 @@
 const navlinks: { title: string; link: string }[] = [
-    { title: "Posts", link: "/posts" },
-    { title: "Guestbook", link: "/guestbook" },
-    { title: "Chatbot", link: "/chatbot" },
+    { title: "posts", link: "/posts" },
+    { title: "algorithm", link: "/algorithm" },
+    { title: "guestbook", link: "/guestbook" },
   ];
    
   export default navlinks;

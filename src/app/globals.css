@@ -2,11 +2,37 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 글 작성시 변수 활용하여 글자 색 지정 */
+:root {
+  --font-blue: #5090B5;
+  --font-red: #D6514C;
+  --font-green: #258c46;
+}
+
+.blue-bold {
+  color: var(--font-blue);
+  font-weight: bold
+}
+
+.red-bold {
+  color: var(--font-red);
+  font-weight: bold
+}
+
+.green-bold {
+  color: var(--font-green);
+  font-weight: bold
+}
+
+
+.highlight {
+  background-color: #FBF3DB;
+}
+
 /* 스크롤바 숨기기 => 필요하면 사용 */
 .hide-scrollbar::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Opera */
 }
-
 
 /* markdown CSS */
 /* 코드 블럭 타이틀 */
@@ -34,6 +60,11 @@
 /* ToC */
 .prose :where(h2 + *):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
   margin-bottom: 70px;
+}
+
+/* p 태그 관련 */
+.prose :where(h2 + *):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+  margin-bottom: 2rem;
 }
 
 /* anchor */

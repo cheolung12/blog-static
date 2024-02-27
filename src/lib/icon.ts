@@ -1,6 +1,6 @@
 import { IconType } from 'react-icons';
 import { FaLaptopCode, FaNodeJs, FaReact } from 'react-icons/fa';
-import { SiJavascript, SiTypescript } from 'react-icons/si';
+import { SiJavascript, SiTypescript, SiYarn } from 'react-icons/si';
 import { TbBrandNextjs } from 'react-icons/tb';
 import { TfiPencilAlt } from 'react-icons/tfi';
 
@@ -15,5 +15,6 @@ export const iconObj: IconObj = {
   React: [FaReact, '#60DBFB'],
   NextJS: [TbBrandNextjs, '#000'],
   NodeJS: [FaNodeJs, '#80BD00'],
+  Library: [SiYarn, '#2F2A69'],
   회고: [TfiPencilAlt, ''],
 };
