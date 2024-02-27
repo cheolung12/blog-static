@@ -1,3 +1,4 @@
+import AnimationProvider from '@/components/AnimationProvider';
 import Giscus from '@/components/Giscus';
 import { allPosts } from 'contentlayer/generated';
 import { format } from 'date-fns';
@@ -16,7 +17,7 @@ export default function Posts({ params }) {
   const MDXComponent = useMDXComponent(post.body.code);
 
   return (
-    <div className='flex flex-col pb-20 gap-7 mx-5 mt-6'>
+    <AnimationProvider className='flex flex-col pb-20 gap-7 mx-5 mt-6'>
       <h1 className='text-5xl font-bold mb-1'>{post.title}</h1>
       <div className='flex flex-row items-center justify-between -mb-2'>
         <div className='rounded-md bg-slate-800 px-2 py-1 text-md text-white'>
@@ -40,6 +41,6 @@ export default function Posts({ params }) {
       </div>
 
       <Giscus />
-    </div>
+    </AnimationProvider>
   );
 }
