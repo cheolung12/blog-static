@@ -15,16 +15,16 @@ const Intro: FC = () => {
   };
 
   return (
-    <div className='flex mt-8 mb-14'>
+    <div className='flex mt-8 mb-6 sm:mb-14'>
       <motion.div
-        className='flex-1 flex flex-col justify-center gap-6'
+        className='flex-1 flex flex-col justify-center gap-2 sm:gap-6'
         initial='hidden'
         animate='visible'
         exit={{ opacity: 0, transition: { duration: 0.5 } }}
         variants={{ visible: { transition: { staggerChildren: 0.3 } } }}
       >
         <motion.div
-          className='text-2xl font-semibold'
+          className='text-sm sm:text-2xl font-semibold'
           variants={{
             hidden: { opacity: 0, y: -20 },
             visible,
@@ -32,14 +32,14 @@ const Intro: FC = () => {
         >
            <span className='text-signature font-semibold'>프론트엔드</span> 개발자 홍철웅 입니다.
         </motion.div>
-        <motion.div className='text-lg' variants={itemVariants}>
+        <motion.div className='text-[0.6rem] sm:text-base lg:text-lg' variants={itemVariants}>
           <span className='font-semibold'>더 나은 사용자 경험</span>에 대하여 끊임 없이 고민하며,
         </motion.div>
-        <motion.div className='text-lg' variants={itemVariants}>
+        <motion.div className='text-[0.6rem] sm:text-base lg:text-lg' variants={itemVariants}>
         <span className='font-semibold'>유지보수가 용이한 코드</span>를 작성하는 것에 흥미가 있습니다.
         </motion.div>
         <motion.div
-          className='flex gap-6 items-center text-2xl mt-2'
+          className='flex gap-4 sm:gap-6 items-center text-base sm:text-2xl mt-2'
           variants={itemVariants}
         >
           <Link href='mailto:cheolung97@gmail.com' target='_blank'>

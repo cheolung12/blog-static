@@ -15,11 +15,11 @@ const CategoryFilter: FC<CategoryFilterProps> = ({ categories }) => {
 
 
   return (
-    <div className='flex w-full gap-5 p-4 mb-2 overflow-auto'>
+    <div className='flex w-full gap-3 sm:gap-5 p-4 mb-2 overflow-auto'>
       {categories.map((category) => (
         <div
           key={category}
-          className={`flex gap-1.5 items-center border rounded-lg px-4 py-2 cursor-pointer hover:scale-105 transition shadow-sm  ${
+          className={`flex gap-1.5 items-center border rounded-lg px-4 py-2 cursor-pointer hover:scale-105 transition shadow-sm text-sm sm:text-base  ${
             category === selected && 'bg-slate-100 border-2 border-slate-300'
           } `}
           onClick={() => updateCategory(category)}
