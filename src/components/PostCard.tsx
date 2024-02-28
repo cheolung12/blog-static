@@ -26,7 +26,7 @@ const PostCard: FC<PostCardProps> = ({date, title, des, slug, thumbnail}) => {
       </div>
       <div className='p-2 w-full'>
         <div className='flex items-center justify-between mb-2.5'>
-          <h2 className='font-bold text-xl sm:text-2xl mt-2'>{title}</h2>
+          <h2 className='line-clamp-1 font-bold text-xl sm:text-2xl mt-2'>{title}</h2>
           <span className='font-medium text-sm text-gray-400 hidden sm:block'>
             {format(new Date(date), 'yyyy-MM-dd')}
           </span>
