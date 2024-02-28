@@ -1,0 +1,88 @@
+---
+title: 'NodeJS란?'
+date: '2023-07-28'
+description: 'NodeJS의 정의와 특징'
+category: 'NodeJS'
+thumbnail: '/thumbnail/nodejs.png'
+---
+
+## 목차
+
+# 🍃 Node.js?
+⇒ Javascript 런타임 (프로그래밍 언어가 구동되는 환경)
+
+# 🌱 특징
+
+## 1. Single Thread
+
+- 프로그래밍 난이도가 쉽고, cpu, 메모리 자원을 적게 사용
+- 싱글 스레드라 주어진 일을 하나밖에 처리 못한다.
+- **<span className='blue-bold'>일부 코드는 Non blocking I/O기능으로 백그라운드 (다른 프로세스)에서 실행 가능</span>**
+- **<span className='red-bold'>에러를 처리하지 못하는 경우 멈춘다</span>**
+
+### 프로세스와 스레드
+**프로세스**
+
+ - 실행중인 프로그램
+ - 운영체제에서 할당하는 작업의 단위
+
+**스레드**
+
+ - 프로세스 내에서 실행되는 흐름의 단위 (노예의 손)
+ - 하나의 프로세스에는 n개의 스레드가 존재하며 동시에 작동할 수 있다.
+
+
+## 2. Non-blocking I/O
+
+- 논블로킹 : 이전 작업이 완료될 때까지 대기하지 않고 다음 작업을 수행하는 것
+- 블로킹 : 이전 작업이 끝나야만 다음 작업을 수행하는 것
+- <span className='green-bold'><u>블로킹 방식보다 논블로킹 방식이 같은 작업을 더 짧은 시간에 처리한다.</u></span> 대신 모든 작업들이 동시에 처리될 수 있는 작업이라는 전제가 있음
+-  <span className='green-bold'><u>노드js는 표준라이브러리의 모든 I/O 메서드를 비동기 방식으로 제공한다.</u></span>
+
+**<span className='highlight'>노드는 싱글스레드, 논블로킹 모델이기 때문에 싱글스레드이지만 싱글스레드로 동작하지 않는다</span>**
+
+**<span className='highlight'>점원이 한명있지만 혼자서 많은 일을 처리할 수 있음, 하지만 그 점원이 아프거나 쓰러지면 큰 문제가 생김</span>**
+
+## 3. 비동기적, 이벤트 기반
+
+<div className='flex justify-center'>![async](https://github.com/cheolung12/blog-static/assets/109952479/edf4df30-b383-43a2-972a-ea1aee8a8aa0)</div>
+
+- 이벤트 기반 : 이벤트가 발생할 때 미리 지정해둔 작업을 수행
+    
+    ex) 클릭, 네트워트 요청, 타이머 등
+    
+
+<div className='flex justify-center'>![event](https://github.com/cheolung12/blog-static/assets/109952479/e8721e35-603b-4297-ae9f-753900ecd3a8)</div>
+- **이벤트 루프** : 이벤트 발생 시 호출할 콜백 함수들을 관리, 실행 순서 결정, 노드가 종료될 때까지 이벤트 처리를 위한 작업을 반복하므로 루프라고 한다
+- **백그라운드** : setTimeout 같은 타이머나 이벤트 리스너들이 대기하는 곳
+- **태스크 큐** : 이벤트 발생 후, 백그라운드에서는 태스크 큐로 타이머나 이벤트 리스너의 콜백함수를 보낸다. 정해진 순서대로 줄을 서 있지만, 특정한 경우 순서가 바뀌기도 한다.
+
+---
+
+# 🌱 localhost와 port
+
+**<span className='highlight'>localhost</span>**
+
+- localhost는 컴퓨터 내부 주소 (127.0.0.1)
+- 자신의 컴퓨터를 가리키는 호스트 이름
+
+**<span className='highlight'>port</span>**
+
+- 서버 내에서 데이터를 주고받는 프로세스를 구분하기 위한 번호
+- 기본적으로 http 서버는 80번 포트를 사용 (생략가능, https는 443)
+
+---
+
+# 🌱 서버로서의 노드
+
+**<span className='red-bold'>노드는 CPU부하가 큰 작업에는 적합하지 않는다.</span>** 
+
+→ 우리가 작성하는 코드는 모두 스레드 하나에서 처리되므로 코드가 CPU연산을 많이 요구하면 스레드 하나가 혼자서 감당하기 어렵기 때문
+
+**🤔 그렇다면 어디에 적합?**
+
+**<span className='blue-bold'>개수는 많지만 크기는 작은 데이터를 실시간으로 주고받는데 적합하다.</span>**
+
+네트워크나 데이터베이스, 디스크 작업 같은 I/O에 특화되어 있기 때문
+
+ex) 실시간 채팅 애플리케이션, 주식 차트 등등..

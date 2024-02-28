@@ -1,0 +1,205 @@
+---
+title: 'Socket IO'
+date: '2023-08-10'
+description: ''
+category: 'NodeJS'
+thumbnail: '/thumbnail/nodejs.png'
+---
+
+## 목차
+
+# 🌐 TCP / UDP
+
+## TCP
+
+- 데이터를 신뢰성 있게 전송하기 위한 프로토콜
+- 신뢰성: 데이터의 손실이나 손상을 최소화, 데이터의 순서 보장
+- 연결 지향: 데이터를 주고받기 전에 송신자와 수신자 간에 연결
+- 흐름 제어: 데이터의 흐름을 제어하여 수신자가 처리할 수 있는 속도에 맞춰 데이터를 전송
+- 혼잡 제어: 네트워크의 혼잡 상태를 감지하고 조절하여 네트워크 성능을 유지
+
+## UDP
+
+- 비연결성 프로토콜로 데이터의 신뢰성은 낮지만 속도가 빠르고 간편하다.
+- 데이터그램 단위로 데이터를 전송, 순서 보장 및 데이터 신뢰성은 보장되지 않음
+- 데이터 전송에 관련된 작업이 단순
+- 흐름 제어나 혼잡 제어 메커니즘이 없어서 오버헤드가 적음
+- VOIP, 스트리밍, 온라인 게임 등에서 데이터 전송이 빈번하게 발생하는 경우에 사용됨
+
+---
+
+# 📬 소켓
+
+- 프로세스가 네트워크로 데이터를 내보내거나 데이터를 받기 위한 실제적인 창구역할 을 하는 것
+- 프로토콜, IP주소, 포트 넘버로 정의된다.
+- TCP와 UDP 프로토콜을 사용하여 데이터를 전송
+
+![socket1](https://github.com/cheolung12/blog-static/assets/109952479/4f6687bb-8324-47ae-a17b-2df703d95909)
+
+## 소켓 프로그래밍 흐름
+
+<div className='flex justify-center'>![sockeet2](https://github.com/cheolung12/blog-static/assets/109952479/d0678851-03ee-4531-b12c-74aa046c4744)</div>
+
+### 서버
+
+- `socket()`: 소켓 생성 함수
+- `bind()`: ip와 port 번호 설정 함수
+- `listen()`: 클라이언트의 요청에 수신 대기열을 만드는 함수
+- `accept()`: 클라이언트와의 연결을 기다리는 함수
+
+### 클라이언트
+
+- `socket()`: 소켓을 여는 함수
+- `connect()`: 통신할 서버의 설정된 ip와 port번호에 통신을 시도하는 함수
+- 통신 시도 시, 서버가 accept 함수를 이용해 클라이언트의 <span className='highlight'>socket descriptor</span>를 반환
+- 이를 통해 클라이언트와 서버가 서로 `read()`, `write()`를 반복하며 통신
+
+
+# Socket IO
+- 클라이언트와 서버 간의 짧은 지연 시간, 양방향 이벤트 기반 통신을 실시간으로 가능하게 하는 라이브러리
+- WebSocket 프로토콜 위에서 구축되었으며 통신 과정을 단순화하고 개선하기 위한 추가 기능을 제공
+- 이벤트기반, 자동 재연결
+
+## 이벤트
+
+1. `connection`: 클라이언트가 서버에 연결되었을 때 발생, 클라이언트와의 상호작용을 초기화하거나 초기 데이터를 전달할 수 있음
+2. `disconnect` : 클라이언트가 연결을 해제했을 때 발생
+3. `disconnecting` : 클라이언트가 연결을 해제하려는 경우에 발생
+4. `error` : 연결 중에 오류가 발생했을 때 발생 
+
+## 사용자 지정 이벤트
+
+- `emit()` 으로 보내고 `on()` 으로 받자
+
+```jsx
+// 보내기
+socket.emit("이벤트명",    
+{보낼데이터: '보낼데이터1'}, '보낼데이터2',   // 개수제한 없음, 형식제한 없음
+(response) => {           // 응답처리용 콜백
+	console.log(response);  // hello 출력됨
+});
+
+// 받기 
+socket.on("이벤트명", (arg1, arg2, callback) => {
+	console.log(arg1, arg2);   // {보낼데이터: '보낼데이터1'} '보낼데이터2'
+	callback("hello");
+})
+```
+
+- 클라이언트나 서버 어느 한쪽에서 emit 을 하면 반대쪽에서 on 하는 방식
+- 서로맞춰가면서 함수 만들면 된다.
+- on 함수에서 콜백함수를 사용하는 것 보다는 socket.emit으로 응답을 다시 보내는 게 낫다.
+
+## 🧑🏻‍💻 클라이언트
+
+```jsx
+<!-- cdn 비스무리한거 위에 추가하기! -->
+<script src="/socket.io/socket.io.js"></script>
+...
+
+<script>
+  ...
+  // 소켓io 사용
+	const socket = io();
+
+  // 서버에 보내기
+  socket.emit(
+        'openMessage',
+        { name: 'client', message: 'Hello Server' },
+        true,
+        (res) => {
+          console.log('res', res);
+        }
+      );
+
+	// 서버한테 받기
+  socket.on('serverMessage', (obj) => {
+        const li = document.createElement('li');
+        li.textContent = `${obj.name}: ${obj.message}`;
+        ul.appendChild(li);
+      });
+
+</script>
+```
+
+## 💻 서버
+
+```jsx
+const http = require("http");
+const express = require("express");
+const SocketIO = require("socket.io");
+
+const app = express();
+const PORT = 8000;
+
+// http 서버
+const server = http.createServer(app);
+// socket 서버
+const io = SocketIO(server);
+
+...
+
+io.on('connection', (socket) => {
+    socket.on('openMessage', (arg, arg2) => {
+        console.log(arg, arg2);  // { name: 'client', message: 'Hello Server' } true
+				socket.emit('serverMessage', arg);
+    });
+});
+
+server.listen(PORT, () => {
+    console.log(`http://localhost:${PORT}`);
+});
+
+```
+
+- 실시간으로 모든 클라이언트에게 보내고 싶다면 `io.emit()`이라고 하면된다.
+
+## 🚪 방만들기
+
+```jsx
+io.on('connection', (socket) => {
+
+	// 소켓 아이디값 나옴 (사용자 
+	console.log('조인 전', socket.rooms);
+	
+	socket.on('join', (room) => {
+	
+		// 채팅방 생성 -> join() 사용 
+		// 조인은 방을 생성하면서 그 방이 존재하면 거기로 접속
+		socket.join(room); 
+
+		socket.room = room;  // 나중에 룸 이름 필요할때 사용하기위해 객체에 추가
+
+		console.log('조인 후', socket.rooms);
+
+		// 나를 제외한 전체사용자에게 메세지 전달
+		x
+		// set 길이 -> size
+		const roomInfo = io.sockets.adapter.rooms.get(room);
+		//console.log(io.sockets.adapter);
+		console.log(roomInfo?.size);
+	});
+	
+	socket.on('sendMessage', (message) => {
+		// io.to(특정방 id).emit(이벤트) -> 특정방의 전체 사용자들에게 메세지 전달
+		io.to(socket.room).emit('chat', message);
+	});
+	
+
+	socket.on('leave', () => {
+		socket.leave(socket.room);
+		console.log(`남은인원: ${io.sockets.adapter.rooms.get(socket.room)?.size}`);
+	});
+    
+});
+```
+
+- `socket.join("방 제목")` :  클라이언트를 특정 방으로 추가
+- `socket.leave(”방 제목”)` : 클라이언트를 특정 방에서 제거
+- `io.to("방 제목").emit(이벤트)` : 특정방의 전체 사용자들에게 메세지 전달
+- `socket.broadcast.to("방 제목").emit(이벤트)` : 나 빼고 특정 방을 사용하고 있는 사용자들에게 메세지 전달
+- `io.sockets.adapter.rooms.get("방 제목")` : 특정 방을 사용하고 있는 사람 수 출력
+
+ 다른 용도를 알고싶다면 공식문서 참고!
+
+[Emit cheatsheet | Socket.IO](https://socket.io/docs/v4/emit-cheatsheet/)

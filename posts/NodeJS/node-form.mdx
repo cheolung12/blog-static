@@ -1,0 +1,169 @@
+---
+title: 'Form 전송'
+date: '2023-08-01'
+description: 'Get & Post, form을 활용한 데이터 전송 (feat.express)'
+category: 'NodeJS'
+thumbnail: '/thumbnail/nodejs.png'
+---
+
+## 목차
+
+# 📝 form
+
+- 입력된 데이터를 한 번에 서버로 전송하기 위해 사용
+- 클라이언트 → 서버로 데이터 전달할 때 사용
+
+## 📝 form 속성
+
+- `action` : 폼을 전송할 서버 주소 지정 (url)
+- `name` : 폼을 식별하기 위한 이름
+- `method` : 폼을 서버에 전송할 http 메소드 지정
+- `target` : action 속성값에 지정한 스크립트 파일을 현재 창이 아닌 다른 위치에서 열 수 있도록 함   ex) _blank, _self
+
+```html
+<h4>GET 요청</h4>
+<form action="/getForm" method="GET">
+    <input type="text" placeholder="id" name="id" required/>
+    <input type="password" placeholder="pw" name="pw" required/>
+    <button type="submit">제출</button>
+</form>
+```
+
+---
+
+# 📝 GET vs POST
+
+### **GET**
+
+- 클라이언트에서 서버로 어떠한 리소스로부터 정보를 요청하기 위해 사용되는 메서드 ex) 게시판 글 조회
+- 전송할 데이터를 query부분에 담아서 보낸다.
+- get을 통한 요청은 url 끝 주소에 파라미터로 포함되어 전송되며 이 부분을 **쿼리스트링**이라 부른다
+    
+    ex) www.example.com/show<span className='green-bold'>?name1=value1&name2=value2</span>
+    
+- 캐시가 가능하다
+- 중요한 정보를 다루면 안된다. (get요청은 파라미터에 다 노출되어 버리기 때문)
+- 데이터를 요청할때만 사용된다.
+- get요청은 브라우저 히스토리에 남는다.
+
+
+### **POST**
+
+- 클라이언트에서 서버로 리소스를 생성하거나 업데이트하기 위해서 데이터를 보낼 때 사용하는 메서드이다. ex) 게시판 글 작성
+- 전송할 데이터를 body부분에 담아서 보낸다.
+- post 요청은 캐시되지 않는다.
+- post 요청은 브라우저 히스토리에 남지 않는다.
+- post 요청은 데이터 길이에 제한이 없다.
+
+---
+
+# 📝 전송하기
+
+```javascript:index.js
+const express = require("express");
+const app = express();
+const PORT = 8000;
+
+// body-parser
+app.use(express.urlencoded({ extended: true}));
+app.use(express.json());
+
+//view engine`
+app.set("view engine", "ejs");
+app.set("views", "./views");
+
+// router
+app.get('/', (req, res)=> {
+    res.render('index', {
+        title: '폼 전송 실습',
+    });
+})
+
+app.get('/getForm', (req, res)=> {
+    console.log(req.query);  // get은 쿼리
+    res.render('result', {
+        title: "GET 요청 폼 결과 확인하기",
+        userInfo: req.query,
+    })
+})
+
+app.post('/postForm', (req, res) => {
+    console.log(req.body);  // post는 body (사실 상 get 말고는 다 body)
+    res.render('result', {
+        title: "POST 요청 폼 결과 확인하기",
+        userInfo: req.body,
+    })
+})
+
+//서버 열기
+app.listen(PORT, () => {
+    console.log(`http://localhost:${PORT}`);
+});
+```
+
+```jsx:index.ejs
+...
+    <h1> <%= title %></h1>
+    <h4>GET 요청</h4>
+    <form action="/getForm" method="GET">
+        <input type="text" placeholder="id" name="id" required />
+        <input type="password" placeholder="pw" name="pw" />
+        <button type="submit">제출</button>
+    </form>
+    <hr />
+    <h4>POST 요청</h4>
+    <form action="/postForm" method="POST">
+        <input type="text" placeholder="id" name="id" pattern="^([a-z0-9]){8,12}$"/>
+        <input type="password" placeholder="pw" name="pw" readonly/
+        <button type="submit">제출</button>
+    </form>
+</body>
+</html>
+
+// result.ejs
+...
+<body>
+    <h1><%= title %></h1>
+    <div><span><%= userInfo.id %></span> 님 환영합니다.</div>
+    <div>비밀번호는<span><%= userInfo.pw %></span>이군요!</div>
+    <br />
+    <br />
+    <a href="/">홈으로 이동</a>
+</body>
+```
+
+- app.get부분 도메인 확인해보자
+- ejs파일들의 action, method 부분 확인해보자
+
+## 🚨 전송 시 주의사항
+
+```jsx
+
+...
+<body>
+    <h1>실습 26. get으로 정보받기</h1>
+    <form action="/getForm" method="GET">
+				...
+            <legend>성별</legend>
+            <input type="radio" name="gender" value="남자" required>남자</input>
+            <input type="radio" name="gender" value="여자" required>여자</input>
+        </fieldset>
+        <br />
+        ...
+        <fieldset>
+            <legend>관심사</legend>
+            <input type="checkbox" name="favorite" value="여행">여행</input>
+            <input type="checkbox" name="favorite" value="패션">패션</input>
+            <input type="checkbox" name="favorite" value="음식">음식</input>
+        </fieldset>
+        <br />
+	       ...
+        <button type="submit">회원가입</button>
+    </form>
+```
+
+- radio, checkbox와 같은 선택적인 거에는 value를 명시해줘야한다.
+- 다른거는 그냥 name만 입력하면됨
+- 백엔드에서 받아왔을 때 이렇게 보임 ( name: value)
+    
+    ![form](https://github.com/cheolung12/blog-static/assets/109952479/969af500-263c-4104-8462-9f0f827756e4)

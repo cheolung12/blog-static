@@ -1,0 +1,449 @@
+---
+title: '기본 타입'
+date: '2023-10-28'
+description: '기본 타입들, Type Alias, Enum, Type Inference, Type Assertion'
+category: 'TypeScript'
+thumbnail: '/thumbnail/typescript.png'
+---
+
+## 목차
+
+# 1️⃣ 기본 타입 정리
+ ```ts
+// 기본중에 기본 타입 예시
+ const num: number = -6;
+ const str: string = 'hello';
+ const bool: boolean = true;
+  
+  // undefined
+  let age: number | undefined;
+  age = undefined;
+  age = 1;
+
+  // null
+  let person: string | null;
+  person = 'abc';
+  person = null;
+
+  // ex) 숫자를 찾는 함수가 있다면 리턴값을 둘 중 하나로
+  function find(): number | undefined {
+    return;
+  }
+
+  // unknown: 무슨 타입인지 모르는 상태
+  // 사용은 지양, 불가피한 경우에만 사용 💩
+  let notSure: unknown = 0;
+  notSure = 'he';
+  notSure = true;
+
+  // any: 어떤 것이든 담을 수 있음
+  // 사용은 지양, 불가피한 경우에만 사용 💩
+  let anything: any = 0;
+  anything = 'hello';
+  anything = true;
+
+  // void: 아무것도 리턴하지 않는 경우, 생략 가능
+  // 변수에 선언하는 경우는 없다.
+  function print(): void {
+    console.log('hello');
+    return;
+  }
+
+  // never: 이 함수를 호출하면 리턴을 안하겠다.
+  // 에러 던질때나 무한루프에서 사용
+  function throwError(msg: string): never {
+    throw new Error(msg);
+    while (true) {}
+  }
+
+  // object: 원시타입을 제외한 모든 object타입을 전달 가능, 배열도 가능\
+  // 쓰지 않는 것이 좋다. 💩 -> interface 사용
+  let obj: object;
+  function acceptSomeObject(obj: object) {}
+  acceptSomeObject({ name: 'ellie' });
+  acceptSomeObject({ animal: 'dog' });
+```
+<br />
+
+# 2️⃣ 함수
+함수는 기본적으로 매개변수, 반환값에 type이 들어간다.
+```ts
+// javascript
+function jsAdd(num1, num2) {
+  return num1 + num2;
+}
+// typescript ✨
+function tsAdd(num1: number, num2: number): number {
+  return num1 + num2;
+}
+
+// javascript
+function jsFetchNum(id){
+  // code ...
+  // code ...
+  return new Promise((resolve, reject) => {
+      resolve(100);
+  });
+}
+
+// typescript ✨
+function tsFetchNum(id: string): Promise<number>{
+  // code ...
+  // code ...
+  return new Promise((resolve, reject) => {
+      resolve(100);
+  });
+}
+```
+## Optional Parameter
+🤔 만약 어떤 함수가 두개의 매개변수를 받아야 하는데 하나만 받고 싶다면?  
+&nbsp;&nbsp;⇒ `?:` 옵셔널 파라미터 사용!
+```ts
+function printName(firstName: string, lastName?: string): void {
+    console.log(firstName);
+    console.log(lastName);
+  }
+  printName('Steve', 'jobs');
+  printName('Steve');  // Steve, undefined로 출력
+```
+## Default Parameter
+매개변수를 필요로 하지만 입력을 안 했을때 기본값으로 지정되는 파라미터, = 으로 사용
+```ts
+function printMessage(message: string = 'default message'): void {
+    console.log(message);
+  }
+  printMessage();   // default message
+```
+## Rest Parameter
+🤔 여러 개의 숫자를 받아 (개수 정해져 있지 않음) 합을 출력하는 함수를 작성해야할때? <br />
+&nbsp;&nbsp; ⇒ `...` 사용 : 배열로 인자를 받아온다!
+```ts
+// Rest parameter: 배열로 인자를 받아옴
+  function addNumbers(...numbers: number[]): number {
+    return numbers.reduce((a, b) => a + b, 0);
+  }
+  console.log(addNumbers(1,2,3,4));    // 10
+  console.log(addNumbers(1,2,3,4,5));  // 15
+```
+<br />
+
+# 3️⃣ Array / Tuple
+## Array
+
+- array의 경우 타입 선언 방법이 두 가지이다.
+ =>  `type[]` , `Array<type>`
+    
+- `readonly` 속성을 활용하여 매개변수를 조작 불가능하게 할 수 있다.
+    
+    당연히 다른 자료형도 됨
+```ts
+const fruits: string[] = ['사과', '바나나'];
+  const scores: Array<number> = [1, 3, 4]; // 이렇게 배열 타입 정의해도됨
+  function printArray(fruits: readonly string[]) {
+    // fruits는 함수 안에서 절대 변경 불가!
+    // fruits.push('element') 이런거 안됨 오류뜸
+  }
+
+```
+## Tuple
+
+- 서로 다른 타입의 데이터를 담고 있는 배열
+- 인덱스로 접근하는게 불편함 , 가독성도 저하 ⇒ 사용 지양 (거의 안 함)
+
+    하나 있다면 react의 useState 
+    
+- 이거 대신에 interface, type alias 를 사용하자
+
+```ts
+let student: [string, number];
+student = ['name', 123];
+console.log(student[0]); // 'name'
+console.log(student[1]); // 123
+// 사용을 한다면 구조분해할당으로
+const [name, age] = student;
+```
+
+<br />
+
+# 4️⃣ Type Alias
+
+- 새로운 타입을 정의하는것
+- `type` 키워드 사용
+
+```tsx
+type Text = string;
+const name: Text = 'ellie';
+
+// 객체 타입 지정
+type Student = {
+  name: string;
+  age: number;
+};
+
+const student: Student = {
+  name: 'aaa',
+  age: 123,
+};
+```
+
+## String Literal Types
+
+- 지정된 값만 사용하게 함
+
+```tsx
+type JSON = 'json';
+const json: JSON = 'json';
+type Bool = true;
+const bool: Bool = true;
+```
+
+## ⭐️ Union Type (or)
+
+```tsx
+type Direction = 'left' | 'right' | 'up' | 'down';
+
+function move(direction: Direction) {
+  console.log(direction);
+}
+
+move('down');
+
+type TileSize = 8 | 16 | 32;
+const tile: TileSize = 16;
+```
+
+### Discriminated Union
+
+- 타입끼리 구별할 수 있는 key를 주는거임 약간 디자인 패턴같은거 ㅇㅇ
+- 여기서는 result가 key
+
+```tsx
+// 로그인 과정 예시
+type SuccessState = {
+  result: 'success';
+  response: {
+    body: string;
+  };
+};
+
+type FailState = {
+  result: 'fail';
+  reason: string;
+};
+
+type LoginState = SuccessState | FailState; // union 활용
+
+// 원래는 반환타입이 Promise<LoginState>
+function logIn(id: string, pw: string): LoginState {
+  return {
+    result: 'success',
+    response: {
+      body: 'log in!',
+    },
+  };
+}
+
+// discriminated union
+function printLoginState(state: LoginState) {
+  if (state.result === 'success') {
+    console.log(state.response.body);
+  } else {
+    console.log(state.reason);
+  }
+}
+```
+
+## Intersection Type (and)
+
+- 매개변수에 `&` 연산자 활용
+- 매개변수 입력할때 두가지 타입에 해당하는 모든 속성을 다 적어줘야 함
+
+```tsx
+type Student = {
+  name: string;
+  score: number;
+};
+
+type Worker = {
+  employeeId: number;
+  work: () => void;
+};
+
+function internWork(person: Student & Worker) {
+  // 두 가지 다 접근 가능!
+  console.log(person.name, person.employeeId, person.work());
+}
+
+// 두 가지 타입에 해당하는 속성을 다 적어줘야함
+internWork ({
+  name: 'ellie',
+  score: 1,
+  employeeId: 123,
+  work: () => {},
+})
+```
+
+## type 가져와서 정의하기
+
+```tsx
+// data.ts
+export const links = [
+  {
+    name: "Home",
+    hash: "#home",
+  },
+  {
+    name: "About",
+    hash: "#about",
+  },
+  {
+    name: "Projects",
+    hash: "#projects",
+  },
+  {
+    name: "Skills",
+    hash: "#skills",
+  },
+  {
+    name: "Experience",
+    hash: "#experience",
+  },
+  {
+    name: "Contact",
+    hash: "#contact",
+  },
+] as const;
+```
+
+이런 데이터가 있다고 하자. 여기서 name만 가져와서 타입으로 쓰려면?
+
+```tsx
+import { links } from "./data";
+
+export type SectionName = (typeof links)[number]["name"];
+```
+
+- `number` 는 index 변수를 의미
+- 자동으로 타입추론이 된걸 확인할 수 있다.<br/>
+    ![이미지1](https://www.notion.so/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2Fbfce75ed-33e6-453e-9850-5a60ec7181ee%2F5d36335e-3855-4aa3-8e38-c41522d4e47b%2F%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2024-01-13_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_7.49.15.png?table=block&id=ef0d823d-2d45-4035-abad-2de204aaf9cb&spaceId=bfce75ed-33e6-453e-9850-5a60ec7181ee&width=1100&userId=bdf1804f-ef00-4c94-a558-f25088b3ae74&cache=v2)
+
+<br />
+
+# 5️⃣ Enum Type
+
+- 이거 안좋아서 안씀 Union 쓰자
+- enum이 변환될 때 tree-shaking에서 제외됨
+
+[TIL (Typescript에서 enum을 사용하면 안되는 이유 With FE)](https://velog.io/@dev_leewoooo/TIL-Typescript에서-enum을-사용하면-안되는-이유#tree-shaking이란)
+
+```tsx
+// Javscript
+const MAX_NUM = 6;
+const MONDAY = 0;
+const TUESDAY = 1;
+// ...
+const DAYS_ENUM = Object.freeze({
+  MONDAY: 0,
+  TUESDAY: 1,
+  WENDSDAY: 2,
+  // ...
+});
+
+// Typescript
+enum Days {
+  Monday,
+  Tuesday = 't',
+  Wendsday = 'w',
+  // 문자열을 명시해줄 수도 있음 그렇지 않다면 인덱스값으로 자동 설정
+}
+console.log(Days.Tuesday);   // t
+const day = Days.Monday;    
+console.log(day);            // 0
+
+// TS에서 enum은 가능한 사용하지 않는것이 좋다
+// day = 10; 이런식으로 다른값도 할당 가능하기 때문!
+// 대신 union타입 사용
+type Days2 = 'Monday' | 'Tuesday'; // ...
+```
+<br />
+
+# 6️⃣ Type Inference
+
+```tsx
+// 선언함과 동시에 문자열 타입이 자동 할당됨
+let text = 'hello';
+// text = 1; 그래서 다른 타입 할당하려고 하면 에러뜸
+
+// default parameter를 통해 message 파라미터에 string이 자동 할당 되었다.
+function print(message = 'hello'){
+    console.log(message);
+}
+
+// return 값이 자동으로 number type으로 추론됨
+function add(x: number, y: number) {
+    return x + y;
+}
+const result = add(1,2);
+```
+
+- 첫번째 `let text = ‘hello’` 같이 너무 당연한 경우가 아닌 이상 타입 추론은 안 쓰는게 좋다
+- 이거 쓸거면 타입스크립트 왜 쓰겠어
+
+<br />
+
+# 7️⃣ Type Assertion
+
+- 타입이 애매할때 이거는 진짜 100% 이 타입이다 라고 생각하면 사용
+1. any 타입인데 문자열로 확신할 경우
+
+```tsx
+function jsStrFunc(): any {
+    return 'hello';
+}
+const result = jsStrFunc();
+
+console.log((result as string).length);   // 5
+console.log((<string>result).length);     // 5
+```
+
+1-2. 배열도 아닌데 배열로 확신할 경우
+
+```tsx
+const wrong: any = 5;
+// 어플리케이션 다운 됨
+console.log((wrong as Array<number>).push(1));  
+```
+
+1. 진짜 10000% 장담할때 쓰는 `!`
+
+```tsx
+function findNumbers(): number[] | undefined {
+	return undefined;
+}
+
+// 방법 1
+const numbers = findNumbers();
+numbers!.push(2);
+
+// 방법 2
+const numbers2 = findNumbers()!;
+numbers2.push(2);
+```
+
+- 배열이 아닌거에 둘다 push 를 시도하니까 당연히 둘 다 에러납니다.
+
+## + as const
+
+```tsx
+const Colors = {   
+  red: "#FF0000",   
+  blue: "#0000FF",   
+  green: "#008000", 
+} as const;
+```
+
+여기서 as const는 뭘까?
+
+⇒ Primitive Type 을 Literal Type으로 지정해주는것!
+
+⇒ ex) red의 타입은 "#FF0000"이 된다.

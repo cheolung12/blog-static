@@ -1,0 +1,154 @@
+---
+title: 'React 개요'
+date: '2023-09-19'
+description: 'Index, Mapped, Condetional, ReadOnly, Partial, Pick, Omit, Record'
+category: 'React'
+thumbnail: '/thumbnail/react.png'
+---
+
+## 목차
+
+# 📝 리액트란? 
+**user interface를 만들기 위한 자바스크립트 라이브러리**
+
+**=> renders UI and responds to events**
+
+# 📝 라이브러리와 프레임워크
+**프레임워크** : 우리가 만드는데에 필요한 모든 것들이 다 갖춰진 것 ex) 앵귤러, 안드로이드, IOS
+- 프레임워크에서 규정되는 모든 것들을 다 공부해야한다.
+- 자율성 떨어짐 (정해진 틀에서 정해진 규칙을 따라야 함)
+
+**라이브러리** : 큰 골격이나 규칙이 정해지지 않고, 조금 더 좁은 문제를 해겨하는데 초점이 맞춰진 것 ex) 리액트
+- 필요할 때마다 내가 원하는 것을 골라쓸 수 있는 자율성 보장
+
+# 📝 리액트의 특징
+**SPA(Single Page Aplication)** : 한 어플리케이션 내에서 컴포넌트를 보여줬다가 숨기고 하는 등 페이지 내에서 자유자재로 네비게이션
+
+**CSR(Client Side Rendering)** : 사용자가 웹 어플리케이션에 접속했을 때, 즉각적으로 html을 보는 것이 아닌 우리가 작성한 모든 코들을 다 달운로드 받은 후 렌더링이 이루어짐. 
+
+# 📝 리액트는 "선언적 방식"으로 작성된다.
+**선언형이란?** 원하는 결과(UI)를 정의하고 라이브러리(React)가 단계를 구성하는 것
+> 다시 말하면 React를 사용할 때는 목표, 즉 화면에 무엇이 표시되어야 하는지를 정의하고 React가 거기까지 도달하는 방법을 알아내도록 만들어야 한다.
+
+## 🤔 명령형 VS 선언형
+명령형 코드는 결과물을 얻기 위한 '과정'에 집중한다.
+```js
+const numbers = [1, 2, 3, 4, 5, 6];
+let sum;
+
+sum = 0;
+for (let i = 0; i < numbers.length; i++) {
+  if (i % 2 === 0) {
+    sum += numbers[i] * 2;
+  }
+}
+
+console.log(sum); // 18
+```
+선언형 코드는 '결과'에 집중
+```js
+const numbers = [1, 2, 3, 4, 5, 6];
+let sum;
+
+sum = numbers
+  .filter(i => i % 2)
+  .map(i => i * 2)
+  .reduce((acc, next) => acc + next);
+
+console.log(sum); // 18
+```
+- filter, map, reduce 메서드가 어떤 로직으로 구현되는지 우리는 알 필요가 없다. 
+- 이미 메서드 안에 서술되어 있기 때문에 우리는 구체적인 절차는 신경쓰지 않고, 추상화된 메서드를 사용하고 싶을 때 선언만 하면 된다.
+
+### 그러면 리액트는 왜 선언형?
+```jsx
+const App = () => {
+  return(
+    <Nav />
+    <Menu />
+    <Detail />
+  );
+}
+```
+- JSX 자체가 선언형은 아니다. 
+- 하지만 JSX의 캡슐화를 통해 선언형 코드 작성이 가능해진다.
+- `<Nav />`, `<Menu />`, `<Detail />`는 JSX로 작성된 코드를 캡슐화한 컴포넌트다.
+- 우리는 `<Nav />`, `<Menu />`, `<Detail />`의 렌더링되는 과정까지 알 필요가 없다.
+
+=> ✨이러한 특징 덕분에 리액트 개발자는 컴포넌트 관련 작업만 신경쓰면 된다.
+
+### 선언형 프로그래밍의 특징
+- 결과물에만 집중하고, 복잡한 과정은 추상화하여 신경쓰지 않는다.
+- 명령형은 한 줄씩 읽어 나가면서 다음에 어떤 일이 발생할지 추측해야 한다. 
+선언형은 자세한 방법을 모르더라도 코드만 보고도 어떤 일이 발생할지 예측이 가능하다.
+- 선언형이 더 가독성이 좋고 예측이 쉽다.
+- 선언형 코드는 사용자에게 편리함을 제공하는 대신 컴퓨터가 이해하지 못하기 때문에 변경해주는 작업이 필요하다.
+
+## 📝 리액트에서 좋은 컴포넌트란?
+
+**A <span className='blue-bold'>highly cohesive building block</span> for UIs, <span className='blue-bold'>loosely coupled</span> with other components**
+
+= 다른 컴포넌트들과는 연결되지 않고 하지만 내부에서는 서로의 응집도가 높은 컴포넌트로 만들어야 한다. 
+
+컴포넌트를 나누는 단위
+
+- **DRY**(Don’t Repeat Yourself) : 재사용성
+- **SR**(Single Responsibility) : 단일책임, 한 컴포넌트 안에서는 하나의 책임만 가질 수 있게
+
+## ⚛️ import React from ‘react’ (createElement())
+
+`package.json` 안을 보면 dependencies에 이런것들이 있는걸 볼 수 있다. 얘네는 어따 쓰냐 한다면!
+
+```json:package.json
+"react": "^18.0.0",
+"react-dom": "^18.0.0"
+```
+
+과거에는 항상 JSX파일 위에 react를 import 해줘야했다.
+
+`import React from 'react';`
+
+하지만 지금은 생략해도 되고 아래와 같이 자동으로 코드를 변환하여 준다.
+
+안에서 어떤일이 벌어지는지, 리액트가 어떻게 동작하는지를 알아보자.
+
+```jsx
+// JSX 사용
+return (
+	<div>
+      <h2>Let's get started!</h2>
+      <Expenses items={expenses}/>
+  </div>
+);
+
+// 기존의 코드
+return React.createElement(
+	'div',
+	{},
+	React.createElement('h2', {}, "Let's get started!"),
+	React.createElement(Expenses, {items: expenses})
+);
+```
+
+- `createElement` : 생성해야하는 요소, 해당 요소를 설정하는 객체, 해당 요소의 사이에 있는 contents 를 파라미터로 받는다.
+- 기존의 코드를 보면 createElement 함수가 여러 createElement를 파라미터로 받고있다.
+    
+    -> **이를 통해 JSX를 작성할 때 왜 하나의 루트(래핑) 요소를 필요로 하는지를 알 수 있다!**
+
+
+# 🌐 DOM & Virtual DOM
+
+**DOM(Document Object Model)** 은 웹 페이지를 이루는 태그들을 자바스크립트가 이용할 수 있게 브라우저가 트리구조로 만든 객체 모델을 의미한다.
+
+### 가상 돔 (Virtual DOM) 이란?
+Virtual DOM을 사용하면 실제 DOM에 접근하여 조작하는 대신에 <span className='blue-bold'>이를 추상화한 자바스크립트 객체를 구성하여 사용!</span>
+![dom](https://github.com/cheolung12/blog-static/assets/109952479/3bf1ea19-30a7-4474-8193-86db5c77d232)
+1. **데이터가 업데이트 되면, 전체 UI를 Virtual DOM에 리렌더링**
+2. **이전 Virtual DOM에 있던 내용과 현재의 내용을 비교 (가상 돔 끼리 비교)**
+3. **바뀐 부분만 실제 DOM에 적용**
+
+⇒ **컴포넌트가 업데이트 될 때 , 레이아웃 계산이 한번만 이뤄짐**
+
+⇒ 그래서 리액트가 빠르다
+
+단방향 데이터 흐름을 갖는다(부모 → 자식으로 props 전달, 반대는❌)
