@@ -2,7 +2,7 @@ import { Post, allPosts } from 'contentlayer/generated';
 import { create } from 'zustand';
 
 // 모든 포스트를 날짜 순으로 정렬
-const initialSortedPosts = allPosts.sort(
+export const initialSortedPosts = allPosts.sort(
   (a, b) => Number(new Date(b.date)) - Number(new Date(a.date))
 );
 
