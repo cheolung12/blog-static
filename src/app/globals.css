@@ -7,6 +7,7 @@
   --font-blue: #5090B5;
   --font-red: #D6514C;
   --font-green: #258c46;
+  --font-yellow: #d9a243;
 }
 
 .blue-bold {
@@ -22,6 +23,11 @@
 .green-bold {
   color: var(--font-green);
   font-weight: bold
+}
+
+.yellow-bold {
+  color: var(--font-yellow);
+  font-weight: bold;
 }
 
 
@@ -44,7 +50,7 @@
     'Liberation Mono', 'Nimbus Mono L', Monaco, 'Courier New', Courier,
     monospace;
 
-  background-color: #4f555c;
+  background-color: #3b4045;
   color: white;
   z-index: 0;
 
