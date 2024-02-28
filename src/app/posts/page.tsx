@@ -12,7 +12,8 @@ const categories = [
   'All',
   ...Array.from(new Set(allPosts.map((p) => p.category))),
 ];
-export default function page() {
+
+export default function Page() {
   const sortedPosts = useCategoryStore((state) => state.sortedPosts);
   const category = useCategoryStore((state) => state.selected);
 
