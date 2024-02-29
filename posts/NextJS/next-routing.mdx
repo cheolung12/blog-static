@@ -1,0 +1,174 @@
+---
+title: 'Routing'
+date: '2024-01-14'
+description: 'pages router & app router'
+category: 'NextJS'
+thumbnail: '/thumbnail/nextjs.png'
+---
+
+## 목차
+
+# NextJS 13 이전 버전
+
+## 파일기반 네비게이션(pages router)
+
+- React에서는 route를 위해서 react-router-dom 라이브러리를 사용해야 하지만 NextJS에서는 페이지 개념을 기반으로 구축된 파일 시스템 기반 라우터가 있다.
+- 파일이 페이지 디렉토리에 추가되면 자동으로 경로로 사용할 수 있다.
+- NextJS가 설정된 폴더 구조로 부터 프로젝트의 라우트를 도출해 내도록 만드는것!
+
+### 파일 생성 예시
+
+pages/index.js -> `/`
+
+pages/blog/index.js -> `/blog`
+
+pages/blog/first-post.js -> `blog/first-post`
+
+pages/dashboard/settings/username.js -> `/dashboard/settings/username`
+
+pages/blog/[slug].js -> `/blog/:slug` (/blog-hello-world)
+
+pages/[username]/setting.js -> `/:username/settings` (/foo/settings)
+
+pages/post/[...all].js -> `/posts/*` (/post/2020/id/title)
+
+
+---
+
+# NextJS 13 - App Router
+
+- 기존에 `pages/` 디렉토리에서 라우팅 되던 방식과 다르게 `app/` 디렉토리로 라우팅 → NextJS 13버전에서 새로나온 file system routing!
+- 라우팅 환경 개선 뿐 아닌 layout, server component, streaming, data fetching 지원
+- 기존 pages 라우터 방식
+
+```jsx
+// pages/index.js
+export default function Page() {
+  return <h1>Hello, Next.js!</h1>;
+}
+```
+
+- 새로운 앱 라우터 방식
+
+```jsx
+// app/layout.js
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en">
+      <body>{children}</body>
+    </html>);
+}
+
+// app/page.js
+export default function Page() {
+  return <h1>Hello, Next.js!</h1>;
+}
+```
+
+## 폴더명 예시
+
+home/ → `abc.com/home` → plain path
+
+[slug]/ → `abc.com/{slug}` → dynamic path
+
+(group)/ → `abc.com/` → just for grouping 경로에 포함되지 않음!
+
+## 예약된 파일명들
+
+### **page**
+
+![page-special-file.avif](https://file.notion.so/f/f/bfce75ed-33e6-453e-9850-5a60ec7181ee/db547704-8b0d-4220-b22f-bea23a025484/page-special-file.avif?id=2d972b52-54bc-4cb7-9b38-e307c713e8c2&table=block&spaceId=bfce75ed-33e6-453e-9850-5a60ec7181ee&expirationTimestamp=1709294400000&signature=TLV2wHEjSQB7b1b6gA0Tw2AoMj0jSVNMYlSjbStbr0w&downloadName=page-special-file.avif)
+
+- 경로에 해당하는 페이지(UI)
+
+### **layout**
+
+![layout-special-file.avif](https://file.notion.so/f/f/bfce75ed-33e6-453e-9850-5a60ec7181ee/a39ce7db-9742-4659-83cd-dcd22294c3c3/layout-special-file.avif?id=f8bfc05d-052f-4173-8e8e-3fc2ac0c0535&table=block&spaceId=bfce75ed-33e6-453e-9850-5a60ec7181ee&expirationTimestamp=1709294400000&signature=fLQukun0Cb27qXckl0ecCxjqTOvpUv2GIxRnhlYnXVM&downloadName=layout-special-file.avif)
+
+- 공통적인 레이아웃 UI 제공.
+- 이를 통해 공통 레이아웃의 상태를 유지하고 불필요한 리렌더링을 방지
+
+```tsx
+export default function DashboardLayout({
+  children, // will be a page or nested layout
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <section>
+      {/* Include shared UI here e.g. a header or sidebar */}
+      <nav></nav>
+ 
+      {children}
+    </section>
+  )
+}
+```
+
+### **loadiing**
+
+![loading-special-file.avif](https://file.notion.so/f/f/bfce75ed-33e6-453e-9850-5a60ec7181ee/b3dc02ec-6c01-45ac-b27a-ba5dcee81c45/loading-special-file.avif?id=3a086d2f-e002-44d1-9283-6022d2bf2c8c&table=block&spaceId=bfce75ed-33e6-453e-9850-5a60ec7181ee&expirationTimestamp=1709294400000&signature=kW-J5VaPt_lcCK__iGsIWjcuoSTXNMBk8l4qte1tRyQ&downloadName=loading-special-file.avif)
+
+![loading-ui.avif](https://file.notion.so/f/f/bfce75ed-33e6-453e-9850-5a60ec7181ee/ed8b70b3-5a44-477c-a916-19b2f6b949e5/loading-ui.avif?id=aaeb7912-3a6c-4c11-b491-b0c24cc31621&table=block&spaceId=bfce75ed-33e6-453e-9850-5a60ec7181ee&expirationTimestamp=1709294400000&signature=nfdm8D53IuMHuE3SWIO90XtzxoqYnyXiQEOPI2Nbc4k&downloadName=loading-ui.avif)
+
+- Loading UI를 만드는 파일
+- 경로 세그먼트의 콘텐츠가 로드되는 동안 서버에서 즉시 로드 상태를 보여줄 수 있다.
+- 렌더링이 완료되면 새로운 콘텐츠가 자동으로 로드된다.
+
+```tsx
+export default function Loading() {
+  // You can add any UI inside Loading, including a Skeleton.
+  return <LoadingSkeleton />
+}
+```
+
+### **error**
+
+![error-special-file (1).avif](https://file.notion.so/f/f/bfce75ed-33e6-453e-9850-5a60ec7181ee/e282196c-46fa-4046-a81e-2c6c93e6e2d2/error-special-file_(1).avif?id=15cfca4b-f582-40cc-9c37-19da366f20c9&table=block&spaceId=bfce75ed-33e6-453e-9850-5a60ec7181ee&expirationTimestamp=1709294400000&signature=c6sdzOvIGhQmWM1J7ChFMEeRjURyu6UUckKj9fyOcDo&downloadName=error-special-file+%281%29.avif)
+
+![error-overview.avif](https://file.notion.so/f/f/bfce75ed-33e6-453e-9850-5a60ec7181ee/a6c971a0-1a76-438f-b67b-90f7dd231fe0/error-overview.avif?id=47ddb215-b9ff-4358-be12-214524169172&table=block&spaceId=bfce75ed-33e6-453e-9850-5a60ec7181ee&expirationTimestamp=1709294400000&signature=EqLmeVkBQLgdNH4FQ4gWRf1AoUh4PsVgv2zXJk8r5cg&downloadName=error-overview.avif)
+
+- 에러 처리용
+- 중첩된 경로에서 예기치 않은 런타임 오류를 처리할 수 있다.
+
+```tsx
+'use client'
+import React from 'react';
+
+async function getPost(postId: string) {
+ ...
+
+  if(!res.ok){
+    // 에러 트리거시 가장 가까이에 있는 error.js파일이 활성화됨
+    throw new Error('Failed to fetch data');
+  }
+  const data = await res.json();
+  return data;
+}
+
+// 가장 가까운 error.js
+'use client' 
+ 
+import { useEffect } from 'react'
+ 
+export default function Error({
+  error,
+  reset,
+}):{
+... 
+// 공식문서에 있는 코드
+}
+```
+
+### **template**
+
+![template-special-file.avif](https://file.notion.so/f/f/bfce75ed-33e6-453e-9850-5a60ec7181ee/df5b314f-b80a-4c53-b5b2-a79e454b785f/template-special-file.avif?id=447418a8-f8aa-457d-8c76-4e69093a9ba0&table=block&spaceId=bfce75ed-33e6-453e-9850-5a60ec7181ee&expirationTimestamp=1709294400000&signature=GHeDZ2N6LWop6pB1MEyHL-DDW2kelSWVPexkulvYqVg&downloadName=template-special-file.avif)
+
+- 각 자식 레이아웃 또는 페이지를 감싼다는 점에서 레이아웃과 유사하다.
+- 템플릿은 경로에 걸쳐 지속되고 상태를 유지하는 레이아웃과 달리 네비게이션에 있는 자식 각각에 대해 새로운 인스턴스를 생성한다.
+
+```tsx
+export default function Template({ children }: { children: React.ReactNode }) {
+  return <div>{children}</div>
+}
+```

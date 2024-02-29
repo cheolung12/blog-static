@@ -1,0 +1,82 @@
+---
+title: 'NextJS의 Image 컴포넌트'
+date: '2024-01-12'
+description: 'next/image에서 제공하는 Image컴포넌트의 기능'
+category: 'NextJS'
+thumbnail: '/thumbnail/nextjs.png'
+---
+
+
+## 목차
+
+# 사용
+```ts
+import Image from 'next/image';
+```
+
+# 기능
+
+- lazy loading
+- 이미지 사이즈 최적화
+- placeholder 제공
+
+## *<span className='highlight'><u>lazy loading</u></span>*
+
+> 이미지를 로드하는 시점을 필요할 때까지 지연시키는 기술
+> 
+- 스크린 밖에 있는 이미지들은 로딩을 지연시키고 스크린 안에 있는 이미지만을 로드해서 불필요한 대역폭 사용을 줄이고 필요한 이미지만 빠르게 로드할 수 있도록 하는 것!
+- Next/Image를 사용하게되면 자동으로 lazy loading이 적용된다.
+- 중요한 이미지 일부에 lazy loading을 적용하고 싶지 않은 경우에는 `priority={true}` 로 설정
+
+## *<span className='highlight'><u>이미지 사이즈 최적화</u></span>*
+
+> 디바이스 크기 별로 srcSet을 미리 지정해두고, 사용자의 디바이스에 맞는 이미지를 다운로드할 수 있게 지원
+> 
+- 사용자의 디바이스에 맞는 이미지 사이즈를 만들고, 용량이 작은 webp 포맷으로 변환하는 작업은 이미지에 대한 최초 요청 시에 Next.js 서버에서 진행됩니다.
+- 이후 요청에는 캐시가 만료될 때까지 캐시 된 이미지가 제공되기 때문에 첫 번째 요청보다 훨씬 빠르게 이미지를 서빙할 수 있다.
+
+## *<span className='highlight'><u>placeholder 제공</u></span>*
+
+> 이미지가 로드되기 전에도 이미지 높이만큼 영역을 표시해서 이미지가 로드된 후에 레이아웃이 흔들리지 않도록 하는 것, CLS(Cumulative Layout Shift)를 방지하기 위해 제공
+> 
+- CLS: 어떤 웹 사이트에 방문했을 때 이미지가 로드되기 전까지 영역의 높이가 0이었다가 이미지가 로드된 후 이미지만큼 영역이 늘어서 레이아웃이 흔들리는 바람에 다른 링크를 클릭하는 현상
+- 커스텀 가능
+
+# 예시
+
+```tsx
+import Image from 'next/image';
+...
+<Image
+  src='https://avatars.githubusercontent.com/u/109952479?v=4'
+  alt='Cheolung12'
+  width='192'
+  height='192'
+  quality='95'
+  priority={true}
+  placeholder="blur"
+/>
+```
+
+```jsx
+// 리모트 이미지의 경우 next.comfig.js에서 설정 추가 필요
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'avatars.githubusercontent.com',
+      },
+    ],
+  },
+};
+
+module.exports = nextConfig;
+```
+
+# 장점
+
+- **성능 향상**: 디바이스마다 적절한 사이즈의 이미지를 서빙하고, webp와 같은 작은 용량의 포맷을 사용함
+- **시각적인 안정성**: 이미지 로드 전 <span className='violet-bold'>placeholder</span>를 제공하여 <span className='violet-bold'>CLS(Cumulative Layout Shift) 방지</span>
+- **빠른 페이지 로딩**: viewport에 들어왔을 때만 이미지를 로드하고, 작은 사이즈의 blur 이미지를 미리 로딩하여 사용자에게 더 빠른 페이지를 보여줄 수 있음

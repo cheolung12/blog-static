@@ -8,6 +8,7 @@
   --font-red: #D6514C;
   --font-green: #258c46;
   --font-yellow: #d9a243;
+  --font-violet: #7953A1;
 }
 
 .blue-bold {
@@ -30,6 +31,10 @@
   font-weight: bold;
 }
 
+.violet-bold {
+  color: var(--font-violet);
+  font-weight: bold
+}
 
 .highlight {
   background-color: #FBF3DB;

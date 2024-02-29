@@ -5,3 +5,70 @@ description: 'NextJS 개요 및 특징'
 category: 'NextJS'
 thumbnail: '/thumbnail/nextjs.png'
 ---
+
+## 목차
+
+# 🖥️ Next.JS란?
+
+<span className='violet-bold'><u>풀스택 웹 애플리케이션을 구축하기 위한 React 프레임워크</u></span>로 현대적인 웹 애플리케이션 개발 과정을 간소화하는데 사용된다.
+
+NextJS의 주요기능에는 <span className='violet-bold'>SSR(Server Side Rendering)</span>과 <span className='violet-bold'>SSG(Static Site Generation)</span>가 있다.
+
+## 서버 사이드 렌더링 (SSR)
+
+> 각 요청 대해(요청 마다) 서버에서 HTML 페이지를 생성하여 보내주는 방식
+
+### 🤔 이거하면 뭐가 좋나요?
+
+**CSR(Clint Side Rendering)의 <span className='red-bold'>단점</span>**
+
+- 초기에 서버에서 데이터를 가져올때 한 번에 다 가져오므로 지연 시간 발생, UX측면에서 좋지 않을 수 있음
+- 검색 엔진에 검색 시 웹크롤링이 동작할 때 내용을 제대로 가져와 읽을 수 없기에 검색엔진 최적화(SEO)에 문제가 된다.
+
+**SSR의 <span className='blue-bold'>장점</span>**
+
+1. **SEO(Search Engine Optimization) 개선**
+
+    Pre-Rendering을 통해서 페이지를 미리 렌더링 하며 완성된 HTML을 가져오기 때문에 사용자와 검색 엔진 크롤러에게 바로 렌더링된 페이지를 전달할 수 있게 된다.
+
+    **🤔 Pre-Rendering이란?**
+
+    => NextJS는 모든 페이지를 pre-render한다.
+
+    이 pre-render한다의 의미는 <span className='highlight'>모든 페이지를 위한 HTML을 Client사이드에서 자바스크립트로 처리하기 전, 즉 “사전에" 생성한다는 것이다.</span>
+
+    이렇게 하기 때문에 **SEO(Search Engine Optimization, 검색엔진 최적화)** 가 좋아진다.
+
+    ex) React의 경우 크롬의 개발자도구에서 javascript disable을 하면 페이지가 렌더링되지 않지만 Next의 경우는 disable을 해도 아무 변화가 없다.
+
+    사용자와의 상호작용은 둘 다 똑같이 JS가 load된 후에 가능하다. (렌더링에서의 차이)
+
+    ![next1](https://github.com/cheolung12/blog-static/assets/109952479/c7c83d9b-4aa3-41ab-b6e4-439ba2f9ba5f)
+    ![next2](https://github.com/cheolung12/blog-static/assets/109952479/7e5394eb-0a34-448b-a053-bb76dc810829)
+
+2. **퍼포먼스 개선**
+
+    CSR은 초기 로딩시간이 긴 반면, SSR은 서버에서 페이지를 완전히 렌더링하여 클라이언트로 보내기 때문에 초기 로딩 속도가 개선되고 사용자가 더 빠르게 콘텐츠를 볼 수 있다. (UX 향상)
+
+3. **소셜 미디어 공유 개선**
+
+    소셜 미디어 플랫폼은 웹 페이지를 스크랩하여 미리보기를 생성하는데, CSR의 경우 초기 HTML에 콘텐츠가 없어 미리보기가 제대로 표시되지 않지만 SSR의 경우 미리보기가 정상적으로 표시된다.
+
+## 정적 사이트 생성 (SSG)
+
+SSG 사용시 <span className='violet-bold'><u>HTML 페이지가 빌드 시간에 생성되고 정적 에셋으로 제공</u></span>되어 각 요청마다 서버 사이드 렌더링이 필요하지 않게 된다.
+
+콘텐츠가 많은 웹사이트나 업데이트 빈도가 낮은 애플리케이션에 적합하며, 빠른 로딩 시간과 효율적인 캐싱을 가능하게 한다.
+
+## 🛠️ 그 외 기능
+
+1. **<u>자동 코드 분할</u>**
+ > Next.js는 각 페이지에서 사용되는 컴포넌트를 기반으로 애플리케이션 코드를 자동으로 작은 번들로 분할하여 사용자가 현재 페이지에 필요한 코드만 다운로드하도록 한다. 이로 인해 로딩 시간이 단축되고 성능이 향상된다.
+2. **<u>핫 모듈 교체</u>**
+ > Next.js는 핫 모듈 교체(HMR)를 지원하여 개발자들이 전체 페이지를 새로 고치지 않고 도 애플리케이션의 변경 사항을 볼 수 있다. 이는 개발 경험을 크게 향상시키고 개발 프로세스를 가속화한다.
+3. **<u>자동 페이지 라우팅</u>**
+ > Next.js는 "pages (or app)" 디렉토리의 파일 구조를 기반으로 자동으로 페이지 라우팅을 처리한다. 이를 통해 개발 프로세스가 간소화되고 수동으로 라우트를 구성할 필요가 없어진다.
+4. **<u>하이브리드 렌더링</u>**
+ > Next.js는 서버 사이드 렌더링(SSR)과 정적 사이트 생성(SSG)을 모두 지원하여 개발자들이 특정 사용 사례에 가장 적합한 방식을 선택하거나 하나의 애플리케이션 내에서 두 기술을 결합할 수 있다.
+
+---

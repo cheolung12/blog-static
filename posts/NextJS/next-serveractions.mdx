@@ -1,0 +1,277 @@
+---
+title: 'Server Actions'
+date: '2024-01-15'
+description: 'Next 13 - Server Actions'
+category: 'NextJS'
+thumbnail: '/thumbnail/nextjs.png'
+---
+
+## 목차 
+
+# Server Actions?
+
+Form 상태 관리, 캐싱, 유효성검사 관련하여 next에서 새롭게 제시하는 solution이다.
+
+Form 데이터로 서버의 데이터를 변경하고, 중간 API 레이어 없이 서버에서 동작하는 함수를 클라이언트에서 직접 실행시킬 수 있다.
+
+- 컴포넌트에서 자체에서 비동기 서버함수를 정의함
+- 서버 컴포넌트에서 정의, 함수형 컴포넌트에서 호출
+- API 엔드포인트를 임의로 생성할 필요가 없다
+- JS없이 form이 작동할 수 있게 한다. (disable해도 됨)
+
+### 점진적 향상 (Progressive Enhancement)
+
+> Progressive Enhancement는 JS가 비활성화되었거나 JS로드에 실패한 경우에도 form이 제대로 작동하도록 하는 기능이다. 이를 통해 JS를 사용하지 않아도 사용자가 양식과 상호작용하고 데이터를 제출할 수 있다.
+> 
+
+# 🛎️ 어떻게 호출?
+
+함수 본문 상단에 “use server” 지시문을 사용하여 별도의 파일에 서버 작업을 만든다. 그런 다음 서버 작업을 클라이언트 구성 요소로 가져온다.
+
+```ts:/app/lib/action.ts 
+// (서버 작업)
+'use server';
+export async function myAction() {
+ //...logic
+}
+```
+
+```ts:/app/components/ClientComponent.tsx 
+// (클라이언트에서 가져오기)
+'use client';
+import { myAction} from "@/lib/actions";
+
+export default function ClientComponent() {
+    return // ...
+}
+
+```
+
+## ⚙️ JSON Server 사용하기 (test용)
+
+```bash
+sudo npm install -g json-server
+```
+
+루트에 db.json 생성 (예시)
+
+```json:/db.json
+{
+  "todos": [
+    {
+      "userId": 1,
+      "title": "밥먹기",
+      "completed": false,
+      "id": 3
+    },
+    {
+      "userId": 1,
+      "title": "운동하기2",
+      "completed": false,
+      "id": 5
+    }
+  ]
+}
+```
+
+원하는 포트번호로 서버실행
+
+```bash
+json-server --watch db.json -p 3001
+```
+
+# 🧑🏻‍💻 사용
+
+## 1. form태그의 `action` prop
+
+```ts
+// /app/lib/actions.ts
+'use server';
+import { revalidatePath } from 'next/cache';
+...
+
+export type Todo = {
+  userId: number;
+  id: number;
+  title: string;
+  completed: boolean;
+};
+
+export async function addTodo(data: FormData) {
+  const title = data.get('title');
+  await fetch('http://localhost:3001/todos', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      userId: 1,
+      title,
+      completed: false,
+    }),
+  });
+  // 캐시되어있던 데이터를 제거 (하나가 추가되었으므로)
+  revalidatePath('/');
+}
+```
+
+```tsx
+// client
+import { addTodo } from '@/lib/actions';
+
+export default function Form() {
+  return (
+    <form action={addTodo}>
+      <input
+        type='text'
+        name='title'
+				...
+      />
+      <button type='submit'>submit</button>
+    </form>
+  );
+}
+```
+
+### revalidatePath
+
+`revalidatePath('/URL')` 
+
+- 해당 /URL에 있던 캐시를 삭제하고 다시 생성해주는 함수이다.
+- 페이지를 다시 로드해주는 기능도 있다.
+- 그냥 새로고침이 아닌 차이점만 바꿔주는 이쁜 새로고침이다.
+
+## 2. `formAction` prop
+
+form 안에 있는 버튼요소 등에 사용
+
+```tsx
+// app/lib/actions.ts
+...
+
+export async function deleteTodo(todo: Todo) {
+  const res = await fetch(`http://localhost:3001/todos/${todo.id}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      id: todo.id,
+    }),
+  });
+  await res.json();
+  revalidatePath('/');
+}
+```
+
+```tsx
+// client
+import { Todo, deleteTodo } from '@/lib/actions';
+...
+export default function TodoItem(todo: Todo) {
+  return (
+    <form>
+      ...
+        <button
+          formAction={async () => {
+            'use server';
+            await deleteTodo(todo);
+          }}
+        >
+          삭제
+        </button>
+    </form>
+  );
+}
+```
+
+## 3. client component에서 사용 → `startTransition`
+
+이 방법은 **Progressive Enhancement**를 **비활성화**한다.
+
+```tsx
+// app/lib/actions.ts
+...
+export async function updateTodo(todo: Todo) {
+  const res = await fetch(`http://localhost:3001/todos/${todo.id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      ...todo, completed: !todo.completed,
+    }),
+  });
+  await res.json();
+  revalidatePath('/');
+}
+```
+
+```tsx
+// client
+'use client';
+import { Todo, updateTodo } from '@/lib/actions';
+import React, { useTransition } from 'react';
+
+export default function Checkbox({ todo }: { todo: Todo }) {
+
+  // 데이터가 바뀌는 도중에는 isPending이 true
+   const [isPending, startTransition] = useTransition();
+
+   return (
+     <input
+       type='checkbox'
+       checked={todo.completed}
+       id='completed'
+       name='completed'
+       disabled={isPending}
+       onChange={() => {
+         startTransition(() => updateTodo(todo));
+       }}
+     />
+   );
+}
+```
+
+### useTransition
+
+React 18에서 도입된 새로운 훅
+
+> useTransition은 UI를 차단하지 않고 상태를 업데이트할 수 있는 React Hook이다.
+> 
+- isPending: pending중에는 true, 아니면 false
+- startTransition: 상태 업데이트를 transition으로 표시할 수 있게 해줌. 여기다가 함수를 넣어주면 그 함수가 실행되는 동안은 pending 상태인것.
+
+### useOptimistic 활용
+
+server action이 끝나기전에 미리 UI를 업데이트해준다.
+
+→ 백엔드의 작업이 끝나기전에 바뀐다는 뜻 (사용자 경험 향상)
+
+→ server action이 호출되면 응답을 기다리지 않고 예상 결과를 반영하여 UI가 업데이트되는 방식
+
+```tsx
+'use client';
+import { Todo, updateTodo } from '@/lib/actions';
+import React, { useOptimistic } from 'react';
+
+export default function Checkbox({ todo }: { todo: Todo }) {
+  const [optimisticTodo, addOptimisticTodo] = useOptimistic(
+    todo,
+    (state: Todo, completed: boolean) => ({ ...state, completed })
+  );
+
+return (
+    <input
+      type='checkbox'
+      checked={todo.completed}
+      id='completed'
+      name='completed' 
+      onChange={async () => {
+        addOptimisticTodo(!todo.completed);
+        await updateTodo(todo)
+      }}
+    />
+  );
+}
+```

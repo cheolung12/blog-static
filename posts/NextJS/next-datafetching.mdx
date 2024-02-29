@@ -1,0 +1,244 @@
+---
+title: 'Data Fetching'
+date: '2024-01-13'
+description: 'next12,13에서의 SSG, SSR / next13 client&server component'
+category: 'NextJS'
+thumbnail: '/thumbnail/nextjs.png'
+---
+
+## 목차
+
+# NextJS 13 버전 이전 방식
+
+**SSG → getStaticProps, getStaticPaths**
+
+공식문서에서 대부분의 경우 사용하기를 추천하는 방식으로 **<span className='highlight'>빌드타임 때</span>** 미리 HTML을 생성해 놓고 요청이 들어왔을 때 해당 페이지를 보여주는 방식입니다. Data Fetching은 빌드타임에 이루어지기 때문에 콘텐츠가 너무 자주 바뀌지 않는 페이지에 적합합니다. revalidate라는 옵션을 주면 매번 새롭게 빌드를 하지 않더라도 주기적으로 새로운 데이터를 불러올 수도 있습니다. 
+
+**SSR → getServerSideProps**
+
+새로운 요청이 들어올 때마다 **<span className='highlight'>런타임 때</span>** HTML을 생성하고 보여주는 방식입니다.
+콘텐츠가 주기적으로 업데이트되는 소셜미디어 피드 같은 다이내믹한 콘텐츠에 적합합니다.
+
+
+## 1. `getStaticProps`
+
+Static Generation으로 빌드 할 때 데이터를 불러온다. (미리 만들어줌)
+
+*사용 해야할 때*
+
+- 외부 데이터(file system, API, DB … )를 미리 가져와야 하는 경우
+- 데이터를 공개적으로 캐시할 수 있을 때 (사용자별 아님)
+- 페이지는 미리 렌더링 되어야 하고 매우 빨라야 할 때
+
+```tsx
+export default function Home({ posts }) { ... }
+
+// 서버에서 빌드 시 해당함수가 호출된다
+export async function getStaticProps() {
+  // 외부 데이터를 받기 (file system, API, DB, etc)
+  // 하지만 이 함수 내부에서 호출하면 성능이 저하됨
+  const data = await fetch('https://.../posts')
+  const posts = await res.json()
+
+  //  props는 빌드시 Home 컴포넌트에 전달된다
+  return {
+    props: { posts }
+  }
+}
+```
+
+- *getStaticProps함수 내부에서 API호출을 생성하면 성능이 저하된다.*
+
+## 2. `getStaticPath`
+
+Static Generation으로 데이터에 기반하여 pre-render시 특정한 동적 라우팅 구현 (pages/post/[id].js)
+
+- HTML build 시간에 렌더링된다.
+- 페이지의 경로가 외부데이터에 따라 다를 때 사용
+- 동적 경로를 통해 getStaticProps할 때 경로 목록을 정의해줘야 함
+- paths.params를 getStaticProps로 리턴해준다.
+- params에 빌드할 페이지를 넣어야한다.
+
+NextJS는 pre-render에서 정적으로 getStaticPaths에서 호출하는 경로들을 가져온다.
+
+```tsx
+function Post({ post }) {
+  const router = useRouter()
+  //  getStaticProps() 끝나면 실행
+  if (router.isFallback) {
+    return <div>Loading...</div>
+  }
+  // Render post...
+}
+
+// id로 동적경로 만드는 예시- posts/1652
+export async function getStaticPaths() {
+  const res = await fetch('https://.../posts/')
+  const posts = await res.json()
+  const paths = posts.map((post) => ({
+    params: { id: post.id },
+  }))
+  return {
+    paths,
+    fallback: true, // false or "blocking" 
+  };
+}
+export async function getStaticProps({ params }) {
+  // params contains the post `id`.
+  // If the route is like /posts/1, then params.id is 1
+  const res = await fetch(`https://.../posts/${params.id}`)
+  const post = await res.json()
+
+  // Pass post data to the page via props
+  return { props: { post } }
+}
+```
+
+`paths`
+
+- 어떠한 경로가 pre-render 될지를 결정
+- ex) pages/posts/[id].js ⇒ `paths: [{ params: {id: '1' }}, { params: {id: '2' }}]`
+
+`fallback`
+
+- false라면 getStaticPaths로 리턴되지 않는 것은 모두 404페이지로 뜬다.
+- true라면 getStaticPaths로 리턴되지 않는 것은 404로 뜨지 않고 fallback 페이지가 뜨게 된다.
+
+```tsx
+// fallback 페이지 지정
+if(router.isFallback) {
+	return <div>Loading...</div>
+}
+```
+
+## 3. `getServerSideProps`
+
+SSR로 요청이 있을 때 데이터를 불러온다.
+
+해당 함수는 클라이언트 측에서 import되지 않고 직접 서버 측 코드(db에서 fetch 등)를 작성할 수 있다.
+
+*사용 해야할 때*
+
+- 자주 변경되는 최신 데이터를 페이지에 업데이트시킬 때 사용
+- 요청할 때 데이터를 가져와야하는 페이지를 미리 렌더링해야 할 때 사용
+- 서버가 모든 요청에 대한 결과를 계산하고, 추가 구성없이 CDN에 의해 결과를 캐시할 수 없기 때문에 첫번째 바이트까지의 시간은 getStaticPros보다 느리다.
+
+```tsx
+export async function getServerSideProps(context) {
+  const res = await fetch(`https://.../data`);
+  const data = await res.json();
+
+  return {
+    props: { data }, 
+  }
+}
+```
+---
+
+# NextJS 13
+
+**SSG => `cache: "force-cache"`**
+
+**SSR => `cache: "no-store"`**
+
+## fetch()
+
+- `async/await`를 사용한 `fetch()` API 사용으로 변경
+- app폴더 사용 시(app router 사용 시) `getStaticProps`, `getServerSideProps` 등 이전 방법은 해당폴더에서는 지원 안된다.
+- *fetch 옵션*을 통해 `getStaticProps`, `getServerSideProps` 처럼 사용 가능하다.
+
+### 🧑🏻‍💻 코드 예시
+
+기본 형태
+
+```tsx
+export async function fetchData() {
+  const res = await fetch(`https://.../data`);
+  const data = await res.json();
+  return data;
+}
+```
+
+fetch 옵션 활용 `fetch(url, option)`
+
+```tsx
+// This request should be cached until manually invalidated.
+// Similar to `getStaticProps`.
+// `force-cache` is the default and can be omitted.
+const staticData = await fetch(`https://...`, { cache: 'force-cache' });
+
+// This request should be refetched on every request.
+// Similar to `getServerSideProps`.
+const dynamicData = await fetch(`https://...`, { cache: 'no-store' });
+
+// This request should be cached with a lifetime of 10 seconds.
+// Similar to `getStaticProps` with the `revalidate` option.
+const revalidatedData = await fetch(`https://...`, {
+  next: { revalidate: 10 },
+});
+```
+
+- `{ cache: 'force-cache' }` : 기본값으로 생략 가능 → 캐시가 오래되더라도 캐시를 사용하여 속도를 우선 (SSG)
+- `{ cache: 'no-store' }` : 모든 요청에서 최신 데이터 받아오기 → 캐시를 완전히 우회하여 신선도를 우선 (SSR)
+- `next: { revalidate: 10 }` :  Revalidating Data, 캐시된 데이터를 일정 시간 간격으로 재검증한다. 기본 단위는 초
+
+## pre-render 
+pre-render의 경우 `getStaticPaths`에서 `generateStaticParams`로 변경
+```tsx
+// Return a list of `params` to populate the [slug] dynamic segment
+export async function generateStaticParams() {
+  const posts = await fetch('https://.../posts').then((res) => res.json())
+ 
+  return posts.map((post) => ({
+    slug: post.slug,
+  }))
+}
+ 
+// Multiple versions of this page will be statically generated
+// using the `params` returned by `generateStaticParams`
+export default function Page({ params }) {
+  const { slug } = params
+  // ...
+}
+```
+
+## Server & Client Component
+
+NextJS 13부터 컴포넌트 수준에서도 렌더링 환경을 선택할 수 있게 변경
+
+### Server Component
+
+NextJS 13 버전의 app directory 안에 있는 모든 컴포넌트들은 기본적으로 React Server Component이다. 
+
+이는 개발자가 서버 인프라를 더 잘 활용할 수 있게 한다. 
+
+- 서버 컴포넌트는 복잡한 인터페이스를 구축하는 동시에 클라이언트로 전송되는 JavaScript의 양을 줄여, 초기 페이지 로드 속도를 높일 수 있음
+- 또한, 경로(route)가 로드될 때, Next.js 및 React 런타임이 로드되어 캐시가 가능하고 크기를 예측할 수 있음
+
+### Client Component
+
+클라이언트 컴포넌트는 어플리케이션의 client-side interactivity를 추가할 수 있게 해준다. NextJS 에서는 서버에서 pre-rendering되고 client에서 hydrate된다. 파일의 최상단에  `use client` 라는 directive를 써서 사용한다.
+
+```tsx
+// Client Component
+'use client'
+import React from 'react';
+...
+
+// Server Component
+// => 별도의 명시 작업이 필요없다.
+```
+
+### 각각의 컴포넌트들을 언제 사용해야할까? 🤔
+
+|  | Server Component | Client Component |
+| --- | --- | --- |
+| Fetch Data | ✅ | ⚠️ (React-Query의 경우 사용) |
+| 백엔드 resource에 접근 | ✅ | ❌ |
+| 서버에 중요한 정보 저장<br />(access token , API keys 등) | ✅ | ❌ |
+| 서버에 대한 의존성 유지 / client-side의 JS를 줄일 때 | ✅ | ❌ |
+| 상호작용과 이벤트 리스너 추가<br />(onClick(), onChange() 등) | ❌ | ✅ |
+| useState와 Life Cycle Effect들<br />(useState(), useReducer(), useEffect() 등)| ❌ | ✅ |
+| browser-only APIs를 사용할 때<br />(localStorage, sessionStorage, Cookie 등)| ❌ | ✅ |
+|상태나 effects, broser-only APIs에 의존하는<br />커스텀 훅을 사용할 때| ❌ | ✅ |
+|React의 클래스 컴포넌트 사용| ❌ | ✅ |
