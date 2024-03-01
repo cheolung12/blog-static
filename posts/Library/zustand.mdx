@@ -1,0 +1,110 @@
+---
+title: 'zustand 사용해보기 (with TS)'
+date: '2024-03-01'
+description: '상태관리 라이브러리, flux 패턴, zustand 사용 예시'
+category: 'Library'
+thumbnail: '/thumbnail/zustand.jpg'
+---
+
+## 목차
+
+# 상태관리 라이브러리, 왜 사용할까?
+**리액트의 이점** => 컴포넌트 기반 개발
+
+**컴포넌트 기반 개발의 단점** => 변수 등 데이터를 컴포넌트간 공유하기 어렵다. (리액트에서의 상태는 단방향으로만 흐르기 때문에 이 과정에서 끝도 없이 상태를 내려야 하는 <span className='red-bold'>props drilling</span> 현상이 발생하게된다.)
+![propsdrilling](https://github.com/cheolung12/blog-static/assets/109952479/57af8cde-0004-4086-9220-cf49deee64fd)
+
+이러한 문제를 해결하기 위해 <span className='violet-bold'>상태 관리 라이브러리</span>를 사용한다.
+
+상태관리 라이브러리는 <span className='highlight emphasis'>state를 전역변수처럼 만들어서 어떤 컴포넌트에서든 바로 state에 접근을 허용하게 하는 장점이 있다.</span>
+
+
+# Flux 패턴
+
+> 사용자 입력을 기반으로 Action을 만들고 Dispatcher에 전달하여 Store(Model)의 데이터를 변경한 뒤 View에 반영하는 단방향의 흐름으로 애플리케이션을 만드는 아키텍처
+
+![flux](https://github.com/cheolung12/blog-static/assets/109952479/7aa684d7-efbc-417a-a097-b5621e92d39c)
+
+- **Action** : <span className='violet-bold'>데이터를 변경하는 행위로서 Dispatcher에 전달되는 객체이다.</span> Action creator 메서드는 새로 발생한 타입 **(type)** 과 새로운 데이터 **(payload)** 를 묶어 Dispatcher에게 전달한다.  
+- **Dispatcher** : <span className='violet-bold'>모든 데이터의 흐름을 관리하는 중앙 허브.</span> Dispatcher에는 Store들이 등록해놓은 Action의 타입마다 콜백 함수들이 존재한다.
+- **Store(Model)** : <span className='violet-bold'>상태 저장소로소 상태와 상태를 변경할 수 있는 메서드를 가지고 있다.</span> Dispatcher에서 콜백 함수를 실행하여 상태과 변경되면 View에게 데이터가 변경되었음을 알린다.
+- **View** : <span className='violet-bold'>리액트 컴포넌트.</span> Store에서 View에게 상태가 변경되었음을 알려주면 최상위 View는 Store에서 데이터를 가져와 자식 View에게 내려보낸다. 리
+
+# zustand 사용해보기
+
+개인 블로그 프로젝트를 진행할때, 카테고리별 게시물 목록을 보여주는 필터를 구현하기 위해 공식문서를 참고하여 사용해 보았다.
+
+## Store 생성
+
+```ts:store.ts
+import { create } from 'zustand';
+import { Post, allPosts } from 'contentlayer/generated';  // 게시물 데이터, 타입 가져오기
+
+// State와 Action을 따로 나눠서 타입 정의!
+type State = {
+  filteredPosts: Post[];  // 전체 게시물
+  selected: string;  // 선택된 카테고리
+};
+
+type Action = {
+  // 카테고리에 따라서 게시물을 필터링 해주는 함수
+  updateCategory: (category: State['selected']) => void;  
+};
+
+export const useCategoryStore = create<State & Action>((set) => ({
+  filteredPosts: allPosts,  // 상태의 초기값
+  selected: 'All',   // 상태의 초기값
+  // 상태 업데이트 로직
+  updateCategory: (category) =>
+    set((state) => ({
+      selected: category,
+      filteredPosts:
+        category === 'All'
+          ? allPosts
+          : allPosts.filter((post) => post.category === category),
+    })),
+}));
+```
+- store코드만 봐도 느껴지겠지만 <span className='red-bold'>보일러 플레이트가 거의 없다.</span> => <u>context처럼 provider를 사용 하지 않음</u>
+
+## 사용
+```tsx:CategoryFilter.tsx
+//...
+import React, { FC } from 'react';
+import { useCategoryStore } from '@/lib/store';
+
+type CategoryFilterProps = {
+  categories: string[];
+};
+
+const CategoryFilter: FC<CategoryFilterProps> = ({ categories }) => {
+  // store에 있는 상태와 업데이트 함수 가져오기
+  const selected = useCategoryStore((state) => state.selected); 
+  const updateCategory = useCategoryStore((state) => state.updateCategory);
+
+  // 간결한 코드 예시를 위해 스타일링 코드는 제외하였음
+  return (
+    <div>
+      {categories.map((category) => (
+        <div
+          key={category}
+          className={category === selected && 'bg-slate-100 border-2 border-slate-300'}
+          onClick={() => updateCategory(category)}
+        >
+          {category}
+        </div>
+      ))}
+    </div>
+  );
+};
+
+export default CategoryFilter;
+```
+![zustandex](https://github.com/cheolung12/blog-static/assets/109952479/0b292c0c-e1bd-4f11-9551-07742b176a3c)
+
+
+<br /><br />
+
+**출처**
+
+Flux 패턴: [https://velog.io/@andy0011](https://velog.io/@andy0011/Flux-%ED%8C%A8%ED%84%B4%EC%9D%B4%EB%9E%80)

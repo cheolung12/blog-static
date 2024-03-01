@@ -40,6 +40,11 @@
   background-color: #FBF3DB;
 }
 
+.emphasis {
+  font-style: italic;
+  text-decoration: underline;
+}
+
 /* 스크롤바 숨기기 => 필요하면 사용 */
 .hide-scrollbar::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Opera */
@@ -48,7 +53,7 @@
 /* markdown CSS */
 /* 코드 블럭 타이틀 */
 .rehype-code-title {
-  margin-bottom: -0.6rem;
+  margin-bottom: -0.6rem !important;
   padding: 0.4em 1em 0.8em 1em;
   font-family: Consolas, 'Andale Mono WT', 'Andale Mono', 'Lucida Console',
     'Lucida Sans Typewriter', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono',
