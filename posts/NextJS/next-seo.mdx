@@ -1,0 +1,164 @@
+---
+title: 'SEO 적용하기 (검색엔진 최적화)'
+date: '2024-03-03'
+description: '블로그 프로젝트에 SEO 적용하기 (metadata, sitemap, robots.txt, google search console, naver search advisor)'
+category: 'NextJS'
+thumbnail: '/thumbnail/nextjs.png'
+---
+
+## 목차
+
+# 1. Metadata 활용
+
+[관련 공식문서 내용](https://nextjs.org/docs/app/api-reference/file-conventions/metadata)
+
+## 정적 메타데이터
+```tsx:layout.tsx
+export const metadata: Metadata = {
+  title: 'cheolung\'s blog',
+  description: '개봘 관련 이야기를 나누는 블로그입니다.',
+};
+```
+- `layout.tsx` or `page.tsx`에 정의
+
+## 동적 메타 데이터
+```tsx:/app/posts/[..slug]/page.tsx
+// ...
+import { Metadata } from 'next';
+
+// seo
+export const generateMetadata = ({params}): Metadata => {
+  const post = allPosts.find(
+    (p) => p._raw.flattenedPath === params.slug.join('/')
+  );
+  return { 
+    title: post.title,
+    category: post.category,
+    description: post.description,
+    openGraph: {
+      images: [{
+        url: post.thumbnail,
+      }]
+    }
+  }
+}
+
+// ...
+```
+- 동적 값이 필요한 메타데이터의 경우 `generateMetadata` 함수를 활용한다.
+- 블로그 게시물 상세페이지에 활용하였다. 
+- `title` : 사용자가 검색 결과에서 웹사이트를 입력하기 위해 클릭할 때 표시되는 내용
+- `description` : 제목에 있는 정보 보완, 구글에 따르면 해당 요소는 순위 지정 목적으로 고려되지 않지만 검색 결과에 대한 클릭률에 영향을 미칠 수 있다고 한다.
+- `openGraph` : 웹 사이트가 소셜 미디어에 공유될 때 미리보기에 사용되는 메타 데이터를 정의
+
+    ex) 카카오톡으로 공유를 할 때 페이지의 미리보기가 카드 형식 처럼 표시된다.
+- 페이지를 들어가보면 메타 태그가 생성된 것을 확인해볼 수 있다.
+    ![metadata](https://github.com/cheolung12/cheolung.dev/assets/109952479/60ce0975-6f14-4011-84ed-a920fc23dbab)
+
+---
+
+# 2. sitemap 
+
+[관련 공식문서 내용](https://nextjs.org/docs/app/api-reference/file-conventions/metadata/sitemap)
+
+> 검색엔진 크롤러가 사이트를 보다 효율적으로 색인화 할 수 있게 해준다.
+
+```ts:/app/sitemap.ts
+import { allPosts } from 'contentlayer/generated';
+import { MetadataRoute } from 'next';
+
+const postSiteMap: MetadataRoute.Sitemap = allPosts.map((post) => {
+  return {
+    url: `https://cheolung.dev/posts/${post._raw.flattenedPath}`,
+    lastModified: new Date(),
+    changeFrequency: 'daily',
+    priority: 1,
+  };
+});
+
+export default function sitemap(): MetadataRoute.Sitemap {
+  return [
+    {
+      url: 'https://cheolung.dev',
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 1,
+    },
+    {
+      url: 'https://cheolung.dev/posts',
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 0.9,
+    },
+    {
+      url: 'https://cheolung.dev/algorithm',
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 0.5,
+    },
+    ...postSiteMap,
+  ];
+}
+```
+- 동적 url의 경우 contentlayer에 있는 게시물의 경로정보를 가져와서 직접 추가해주었다.
+- url/sitemap.xml 경로에 파일이 생성된 것을 확인할 수 있다.
+    ![sitemap](https://github.com/cheolung12/cheolung.dev/assets/109952479/946fe6da-2a9d-404d-8c67-3e6139b6467d)
+
+---
+
+# 3. robots.txt 
+
+[관련 공식문서 내용](https://nextjs.org/docs/app/api-reference/file-conventions/metadata/robots)
+
+> 검색 엔진 크롤러에게 내 사이트에 액세스할 수 있는 url을 알려주는 용도
+
+```ts:/app/robots.ts
+import { MetadataRoute } from 'next'
+ 
+export default function robots(): MetadataRoute.Robots {
+  return {
+    rules: {
+      userAgent: '*',
+      allow: '/',
+    //   disallow: '/private/',
+    },
+    sitemap: 'https://cheolung.dev/sitemap.xml',
+  }
+}
+```
+- sitemap url을 추가해주자.
+- `disallow`의 경우에는 admin 경로 같은거 있으면 넣으면 된다.
+- url/robots.txt 경로에 파일이 생성된 것을 확인할 수 있다.
+    ![robots](https://github.com/cheolung12/cheolung.dev/assets/109952479/f1072316-1504-41fd-aa27-bbe50719cd0d)
+
+---
+
+# 4. Google Search console
+<span className='blue-bold'>sitemap을 생성한 후에 크롤러와 봇들이 글들을 수집하도록 검색엔진에 사이트를 등록해줘야 한다.</span>
+
+[Google Search Console Link](https://search.google.com/search-console/about)
+
+![gs1](https://github.com/cheolung12/cheolung.dev/assets/109952479/4b4d962b-75f6-47f6-b055-c854ef4d29ff)
+아무거나 해도 된다. 필자의 경우 도메인을 샀으므로 신규 기능을 써보겠다.
+
+![gs2](https://github.com/cheolung12/cheolung.dev/assets/109952479/f7e790ab-a1d9-4b0f-b2f4-a711a74e3fee)
+도메인은 가비아에 샀으므로 txt 유형으로 DNS 설정에 추가해주자.
+![gs3](https://github.com/cheolung12/cheolung.dev/assets/109952479/c0931f3f-a804-42e2-8fa6-3d33455bbe82)
+
+![gs4](https://github.com/cheolung12/cheolung.dev/assets/109952479/b56c0a10-1f1a-427a-8585-951a1ab4d5c9)
+이렇게 하면 성공적으로 소유권 인증이 완료 된다.
+
+이 후 URL/sitemap.xml 경로로 사이트맵을 제출한다.
+![gs5](https://github.com/cheolung12/cheolung.dev/assets/109952479/0cb3350b-1212-4a32-8ba5-eb6b99532bd0)
+
+![색인 생성 아직 안됨. 되는 대로 업데이트 하겠음]()
+
+---
+
+# 5. Naver Search Advisor
+[네이버 웹 마스터 도구](https://searchadvisor.naver.com/console/board)
+
+네이버의 경우 소유권 확인을 위해 html 파일을 제공해주는데 이 파일을 그냥 public 폴더에 넣으면 인증 완료된다.
+
+인증 완료 후 사이트맵 url을 추가해주자
+![nsa](https://github.com/cheolung12/cheolung.dev/assets/109952479/470cc705-3e94-4a02-ab6f-2868deb21557)
