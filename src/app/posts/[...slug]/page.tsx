@@ -2,8 +2,26 @@ import AnimationProvider from '@/components/AnimationProvider';
 import Giscus from '@/components/Giscus';
 import { allPosts } from 'contentlayer/generated';
 import { format } from 'date-fns';
+import { Metadata } from 'next';
 import { useMDXComponent } from 'next-contentlayer/hooks';
 import Image from 'next/image';
+
+// seo
+export const generateMetadata = ({params}): Metadata => {
+  const post = allPosts.find(
+    (p) => p._raw.flattenedPath === params.slug.join('/')
+  );
+  return { 
+    title: post.title,
+    category: post.category,
+    description: post.description,
+    openGraph: {
+      images: [{
+        url: post.thumbnail,
+      }]
+    }
+  }
+}
 
 // 정적 경로 생성 (getStaticPath)
 export const generateStaticParams = () => {
