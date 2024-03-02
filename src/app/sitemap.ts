@@ -1,5 +1,15 @@
-import { MetadataRoute } from 'next'
- 
+import { allPosts } from 'contentlayer/generated';
+import { MetadataRoute } from 'next';
+
+const postSiteMap: MetadataRoute.Sitemap = allPosts.map((post) => {
+  return {
+    url: `https://cheolung.dev/posts/${post._raw.flattenedPath}`,
+    lastModified: new Date(),
+    changeFrequency: 'daily',
+    priority: 1,
+  };
+});
+
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     {
@@ -12,7 +22,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: 'https://cheolung.dev/posts',
       lastModified: new Date(),
       changeFrequency: 'daily',
-      priority: 0.8,
+      priority: 0.9,
     },
     {
       url: 'https://cheolung.dev/algorithm',
@@ -20,5 +30,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'daily',
       priority: 0.5,
     },
-  ]
+    ...postSiteMap,
+  ];
 }

@@ -8,7 +8,7 @@ const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'cheolung\'s blog',
-  description: '개봘 관련 이야기를 나누는 블로그입니다.',
+  description: '개발 관련 이야기를 나누는 블로그입니다.',
 };
 
 export default function RootLayout({
