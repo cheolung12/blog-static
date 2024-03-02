@@ -4,18 +4,21 @@ import { iconObj } from '@/lib/icon';
 import { useCategoryStore } from '@/lib/store';
 import React, { FC } from 'react';
 
-
 type CategoryFilterProps = {
+  type: 'General' | 'Algorithm';
   categories: string[];
 };
 
-const CategoryFilter: FC<CategoryFilterProps> = ({ categories }) => {
-  const selected = useCategoryStore((state) => state.selected);
-  const updateCategory = useCategoryStore((state) => state.updateCategory);
-
+const CategoryFilter: FC<CategoryFilterProps> = ({ type, categories }) => {
+  const selected = useCategoryStore((state) =>
+    type === 'General' ? state.category : state.algoCategory
+  );
+  const updateCategory = useCategoryStore((state) =>
+    type === 'General' ? state.updateCategory : state.updateAlgoCategory
+  );
 
   return (
-    <div className='flex w-full gap-3 sm:gap-5 p-4 mb-2 overflow-auto'>
+    <div className='flex justify-center w-full gap-3 sm:gap-5 p-4 mb-2 overflow-auto'>
       {categories.map((category) => (
         <div
           key={category}

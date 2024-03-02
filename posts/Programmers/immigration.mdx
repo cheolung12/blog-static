@@ -1,0 +1,48 @@
+---
+title: '[JavaScript] 입국심사'
+date: '2024-01-22'
+description: '프로그래머스 level3, 이진 탐색 활용'
+category: 'Programmers'
+thumbnail: '/thumbnail/programmers.png'
+---
+
+# 💻 Code
+```js
+function solution(n, times) {
+    // 최소시간 1
+    let left = 1;
+    // 최대시간 
+    let right = Math.max(...times) * n;
+    let answer = right;
+
+    while (left <= right) {
+        // console.log(`left: ${left}`)
+        // console.log(`right: ${right}`)
+        let mid = Math.floor((left + right) / 2);
+        // console.log(`mid: ${mid}`)
+
+        // 최소시간을 mid로 잡고 몇명 이용가능한지(count) 계산
+        let count = times.reduce((acc, time) => acc + Math.floor(mid / time), 0);
+        // console.log(`count: ${count}`)
+        // console.log('--------------------------');
+
+        // mid 값 조정하면서 반으로 줄이기
+        if (count >= n) {
+            // count >= n 이면 다 심사를 받을 수 있는 상태이므로 현재까지 찾은 최소 시간 값중 작은 값으로 업데이트
+            answer = Math.min(answer, mid);
+            right = mid - 1;
+        } else {
+            left = mid + 1;
+        }
+    }
+
+    return answer;
+}
+
+// console.log(solution(6, [7, 10]));
+```
+
+# 🤔 왜 이문제에 이분탐색을 사용할까?
+- 이 문제는 <span className='red-bold'>“최소시간”</span>을 찾는 최적화 문제, 최소 시간이 어디에 있을지 알 수 없으므로 가능한 모든 시간을 검색해야 한다.
+- 이 경우 최소 <span className='blue-bold'>시간(left), 최대 시간(right)</span> 사이에서 원하는 결과를 찾을 수 있는 이분탐색이 적합하다.
+- 이분탐색의 경우 시간복잡도가 <span className='violet-bold'>O(logN)</span>이기 때문에, 심사관의 수나 대기 인원 수가 많아도 빠르게 원하는 결과를 얻을 수 있다.

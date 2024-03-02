@@ -1,0 +1,84 @@
+---
+title: '이진 탐색 (Binary Search) - JavaScript'
+date: '2024-01-22'
+description: '이진 탐색 알고리즘, 시간복잡도, 코드(js)'
+category: 'Algorithm'
+thumbnail: '/thumbnail/algorithm.png'
+---
+
+> <span className='blue-bold'>정렬되어 있는 배열</span>에서 <span className='red-bold'>탐색 범위를 절반씩 좁혀가며</span> 데이터를 탐색하는 방법
+
+# 예시
+
+<span className='green-bold'>찾고자 하는 값 : 4</span>
+
+1. **시작점: 0, 끝점: 9, 중간점: 4**
+
+![bs1](https://github.com/cheolung12/cheolung.dev/assets/109952479/480b3b21-ca5b-40a6-b48b-46c4e401df82)
+
+- 중간점이 두개일 경우 소수점이하 제거 (0+9) / 2 = 4.5 ⇒ 4
+- 찾고자하는 값 4가 중간점인 8보다 작음 ⇒ 중간점 포함 오른쪽 제거
+<br />
+
+2. **시작점: 0, 끝점: 3, 중간점: 2**
+
+![bs2](https://github.com/cheolung12/cheolung.dev/assets/109952479/8d5c2326-a306-47c3-a752-cd90460e7c7b)
+
+- 이번에는 찾고자 하는 값 4가 중간점인 2보다 큼 ⇒ 중간점 포함 왼쪽 제거
+<br />
+
+3. **시작점: 2, 끝점: 3, 중간점: 2**
+    
+    ![bs3](https://github.com/cheolung12/cheolung.dev/assets/109952479/60ae4f63-027c-4911-b7c6-efa56a309b17)
+    
+- 찾고자하는 값과 중간 점이 같음 ⇒ 탐색 종료
+
+# 🕰️ 시간복잡도
+
+- 단계 마다 탐색 범위를 2로 나누는 것과 동일하므로 연산 횟수는 log_2⁡_N에 비례 (로그 이의 엔 입니다.)
+    
+    ex) 초기 데이터 개수 : 32개 → 16개 →8개 → 4개 ….
+    
+- 이렇게 탐색 범위를 절반씩 줄이므로 시간 복잡도는 <span className='blue-bold'>O(logN)</span>
+
+# 🛠 구현
+
+```js
+const binarySearch = (list, target, left, right) => {
+  let mid = 0;
+
+  while (left <= right) {
+    // 가운데 인덱스
+    mid = Math.floor((left + right) / 2);
+
+    if (list[mid] === target) {
+      return mid;
+    }
+    
+    // 대소 비교로 범위 지정
+    if (list[mid] > target) {
+      right = mid - 1;
+    } else {
+      left = mid + 1;
+    }
+  }
+
+  return -1;
+}
+
+const sample = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+// 정렬되어 있는 배열에서하는게 이진탐색이니까..!
+sample.sort((a, b) => a - b);   
+
+// ( 찾을 배열, 탐색할 값, 시작점, 끝점 )
+const result = binarySearch(sample, 7, 0, sample.length - 1);
+
+console.log(result);
+```
+
+## 📑 참고자료
+
+[(이코테 2021 강의 몰아보기) 5. 이진 탐색](https://www.youtube.com/watch?v=94RC-DsGMLo)
+
+[[JS] 이진 탐색(이분 탐색)](https://gurtn.tistory.com/94)

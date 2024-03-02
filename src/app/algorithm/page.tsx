@@ -4,17 +4,17 @@ import AnimationProvider from '@/components/AnimationProvider';
 import CategoryFilter from '@/components/CategoryFilter';
 import PostList from '@/components/PostList';
 import { iconObj } from '@/lib/icon';
-import { posts, useCategoryStore } from '@/lib/store';
+import { algoPosts, useCategoryStore } from '@/lib/store';
 import React from 'react';
 
 const categories = [
   'All',
-  ...Array.from(new Set(posts.map((p) => p.category))),
+  ...Array.from(new Set(algoPosts.map((p) => p.category))),
 ];
 
 export default function Page() {
-  const sortedPosts = useCategoryStore((state) => state.posts);
-  const category = useCategoryStore((state) => state.category);
+  const sortedPosts = useCategoryStore((state) => state.algoPosts);
+  const category = useCategoryStore((state) => state.algoCategory);
 
   return (
     <AnimationProvider className={`flex flex-col mt-4 sm:mt-2`}>
@@ -27,7 +27,7 @@ export default function Page() {
         </div>
         <div className='text-xl sm:text-2xl font-light'>{sortedPosts.length} posts</div>
       </div>
-      <CategoryFilter type={'General'} categories={categories} />
+      <CategoryFilter type={'Algorithm'} categories={categories} />
       <div className={`flex flex-col gap-2 mt-2 sm:mt-6`}>
         <PostList sortedPosts={sortedPosts} />
       </div>
