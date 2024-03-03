@@ -18,7 +18,7 @@ export default function Giscus() {
     scriptElem.async = true;
     scriptElem.crossOrigin = 'anonymous';
 
-    scriptElem.setAttribute('data-repo', 'cheolung12/blog-static');
+    scriptElem.setAttribute('data-repo', 'cheolung12/cheolung.dev');
     scriptElem.setAttribute('data-repo-id', 'R_kgDOLW84Qw');
     scriptElem.setAttribute('data-category', 'General');
     scriptElem.setAttribute('data-category-id', 'DIC_kwDOLW84Q84CdfXY');
