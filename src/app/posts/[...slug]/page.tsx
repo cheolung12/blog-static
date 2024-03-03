@@ -12,6 +12,7 @@ export const generateMetadata = ({params}): Metadata => {
     (p) => p._raw.flattenedPath === params.slug.join('/')
   );
   return { 
+    metadataBase: new URL('https://cheolung.dev'),
     title: post.title,
     category: post.category,
     description: post.description,
