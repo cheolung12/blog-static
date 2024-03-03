@@ -1,10 +1,10 @@
 import AnimationProvider from '@/components/AnimationProvider';
 import Giscus from '@/components/Giscus';
+import ImageWithPlaceholder from '@/components/ImageWithPlaceholder';
 import { allPosts } from 'contentlayer/generated';
 import { format } from 'date-fns';
 import { Metadata } from 'next';
 import { useMDXComponent } from 'next-contentlayer/hooks';
-import Image from 'next/image';
 
 // seo
 export const generateMetadata = ({params}): Metadata => {
@@ -46,14 +46,15 @@ export default function Posts({ params }) {
           {format(new Date(post.date), 'yyyy년 M월 d일')}
         </div>
       </div>
-      <Image
+      <ImageWithPlaceholder src={post.thumbnail}/>
+      {/* <Image
         src={post.thumbnail}
         alt={post.title}
         width={0}
         height={0}
         sizes='100vw'
         className='h-auto w-full mb-8'
-      />
+      /> */}
 
       <div className='prose mb-12'>
         <MDXComponent className='min-w-full' />
