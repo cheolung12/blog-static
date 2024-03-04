@@ -1,0 +1,140 @@
+---
+title: 'plaeholder로 CLS 해결하기'
+date: '2024-03-04'
+description: 'cumulative layout shift, plaiceholder, sharp'
+category: 'NextJS'
+thumbnail: '/thumbnail/nextjs.png'
+---
+
+## 목차
+
+# 문제
+
+![CLS](https://github.com/cheolung12/cheolung.dev/assets/109952479/10ee1e9e-241f-4da9-a6c5-f50cfc32a13a)
+
+게시글 상세 페이지에서 썸네일 이미지 로딩 시 layout shift 현상이 발생하는 것을 확인하였다. (Fast 3G)
+
+---
+
+# 원인
+Next.js의 Image 컴포넌트를 사용하고 있었지만, 이미지를 public폴더에서 동적으로 불러오고 있기 때문에 너비와 높이를 따로 지정하지 않고 있었다.
+```tsx
+<Image
+    src={post.thumbnail}
+    alt={post.title}
+    width={0}
+    height={0}
+    sizes='65vw'
+    className='h-auto w-full mb-8'
+/>
+```
+
+---
+
+# 해결
+> Next.js의 Image컴포넌트는 이미지가 로딩되기 전에 보여줄 placeholder 속성을 지정할 수 있다.
+
+단, 이미지를 위 사례와 같이 동적으로 불러올 경우 `blurDataURL` 속성이 필수적으로 요구된다.
+
+=> Next.js 공식문서에서는 blurDataURL을 생성하기위해 plaiceholder 라이브러리를 제안하고 있다.
+
+## 코드
+```bash
+yarn add sharp plaiceholder @plaiceholder/next
+```
+```js:next.config.mjs
+import withPlaiceholder from "@plaiceholder/next";
+ 
+/**
+ * @type {import('next').NextConfig}
+ */
+const config = {
+  // your Next.js config
+};
+ 
+export default withPlaiceholder(config);
+```
+- plaiceholder 공식문서에 의하면 반드시 `.mjs`나 `.ts`를 사용할 것을 강조하고 있다. (.js는 안됨)
+<br />
+
+```ts:/libs/getBase64.ts
+import fs from "node:fs/promises";
+import path from "node:path";
+import { getPlaiceholder } from "plaiceholder";
+
+const getBase64 = async (src: string) => {
+  const buffer = await fs.readFile(path.join("./public", src));
+
+  const {
+    metadata: { height, width },
+    ...plaiceholder
+  } = await getPlaiceholder(buffer, { size: 10 });  // 10 픽셀의 base64URL을 만든다.
+
+  return {
+    ...plaiceholder,
+    img: { src, height, width }, 
+  };
+};
+
+export default getBase64;
+```
+- public 폴더의 이미지를 읽어와서 Buffer를 생성
+- `getPlaiceholder()` 함수는 base64URL, 이미지 높이, 이미지 너비 값을 반환한다. 
+
+
+```tsx:/components/ImgWithPlaceholder.tsx
+import getBase64 from "@/utils/getBase64";
+import Image from "next/image";
+
+async function ImgWithPlaceholder({ src }: { src: string }) {
+  const { base64, img } = await getBase64(src);
+
+  return (
+    <Image
+      src={src}
+      alt={src}
+      width={img.width}
+      height={img.height}
+      sizes="65vw"
+      style={{ height: "auto" }}
+      placeholder="blur"
+      blurDataURL={base64}
+    />
+  );
+}
+
+export default ImgWithPlaceholder;
+```
+- 이렇게 컴포넌트화 해서 사용할 수 있다.
+
+```tsx
+<ImageWithPlaceholder src={post.thumbnail} />
+```
+
+![CLS2](https://github.com/cheolung12/cheolung.dev/assets/109952479/47637dec-c736-4a06-bedc-717023f08020)
+
+---
+
+# + 에러 해결
+코드를 수정하고 실행을 하면 이런 에러가 발생할 수도 있다. (호환성 문제) 
+```bash
+Error: Could not load the "sharp" module using the darwin-x64 runtime
+...
+```
+sharp라이브러리를 다운그레이드 해주면 해결할 수 있다.
+```json:package.json
+"dependencies": {
+    // ...
+    "sharp": "^0.32.6",
+}
+```
+
+---
+
+**참고 자료**
+
+[plaiceholder 공식문서](https://plaiceholder.co/docs/plugins/next)
+
+[haruisshort.tistory.com](https://haruisshort.tistory.com/302)
+
+[Vercel only: 0.33.0: error Could not load the "sharp" module using the linux-x64 runtime](https://github.com/lovell/sharp/issues/3870)
