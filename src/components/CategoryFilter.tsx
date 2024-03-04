@@ -18,7 +18,7 @@ const CategoryFilter: FC<CategoryFilterProps> = ({ type, categories }) => {
   );
 
   return (
-    <div className='flex lg:justify-center justify-start w-full gap-3 sm:gap-5 p-4 mb-2 overflow-auto'>
+    <div className={`flex ${type === 'Algorithm' && 'lg:justify-center'} justify-start w-full gap-3 sm:gap-5 p-4 mb-2 overflow-auto`}>
       {categories.map((category) => (
         <div
           key={category}

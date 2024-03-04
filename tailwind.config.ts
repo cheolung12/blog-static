@@ -37,7 +37,7 @@ const config: Config = {
               },
               backgroundColor: theme('colors.gray.100'),
               color: theme('colors.red.500'),
-              fontWeight: '400',
+              fontWeight: '550',
               padding: theme('spacing.1'),
               borderRadius: theme('borderRadius.DEFAULT'),
             },
