@@ -13,7 +13,7 @@ const Header: FC = () => {
   return (
     <div className='fixed w-full z-50'>
       <header
-        className={`flex h-16 py-2 mx-auto w-[375px] sm:w-[700px] lg:w-[840px] bg-white items-center justify-between lg:h-20`}
+        className={`flex h-16 py-2 mx-auto w-[375px] sm:w-[700px] lg:w-[840px] bg-white items-center justify-between md:h-[4.5rem] 2xl:h-20`}
       >
         <Link href='/'>
           <h1 className='text-base sm:text-3xl font-bold lg:text-3xl'>
