@@ -1,0 +1,73 @@
+---
+title: 'VSCode 테마 글자 색 일부 미적용'
+date: '2023-08-28'
+description: ''
+category: 'etc'
+thumbnail: '/thumbnail/vscode.png'
+---
+
+# 문제
+
+TS 공부를 하려던 중 타입 명시하는 부분에서 글자색이 변경하지 않는 것을 확인하였다. 강의와 코드 색상이 달랐음. 
+
+<div className='flex justify-center gap-2 w-full'>
+    <div className='flex-1'>![vsc1](https://github.com/cheolung12/cheolung.dev/assets/109952479/dd4a0cf9-e388-4711-b514-7f5fb68beccc) </div>
+    <div className='flex-1'>![vsc2](https://github.com/cheolung12/cheolung.dev/assets/109952479/7fb3e5aa-93a2-44c7-ad5e-3ffb9229d12a) </div>
+</div>
+
+왼쪽이 내 에디터, 오른쪽이 색상이 적용된 에디터이다. (테마는 둘 다 Community Material Theme 사용)
+
+---
+
+# 해결법
+
+1. `cmd + shift + p` (window: ctrl + shift + p)로 명령팔레트를 연후 `settiing.json` 입력 -> `기본설정: 사용자 설정 열기` 클릭
+
+![vscode3](https://github.com/cheolung12/cheolung.dev/assets/109952479/eaa030f6-77ac-44ef-b9a0-940c81a2f01c)
+
+2.  여기 맨 밑에다 코드를 추가해서 색상을 바꿔줄거다.
+
+![vscode4](https://github.com/cheolung12/cheolung.dev/assets/109952479/a6edea23-bd72-4bad-84e9-7a72b4639c27)
+
+3. `setting.json` 켜놓고 이제 색상을 변경할 코드 파일에 들어간 다음  다시 `cmd + shift + p` -> `developer: inspect editor tokens and scopes` 입력 -> `개발자: 편집기 토큰 및 범위 검사` 클릭
+
+![vscode5](https://github.com/cheolung12/cheolung.dev/assets/109952479/5115c96f-a5e6-4a47-bd78-8c8c077efdc1)
+
+4. 이제 색깔 바꾸고 싶은 코드에 마우스를 갖다대면 이렇게 정보가 나온다. 여기서 필요한건 `foreground`와 `textmate scopes`의 첫 줄 값!
+
+- foreground는 현재 선택된 텍스트의 색상이고 textmate scopes는 이 설정들이 적용되는 범위이다. (아래 코드에서는 타입코드를 의미)
+
+- 바꿔야 하는 코드의 textmate scopes와 바꿀 색상이 적용된 코드의 foreground를 잘 복사해준다 <span className='red-bold'>(원하는 색상이 따로 있다면 그냥 그 색상 16진수 복사해서 쓰면 됨 꼭 있는 색상 쓸 필요 x)</span>
+
+<div className='flex justify-center gap-2 w-full'>
+    <div className='flex-1'>![vscode6](https://github.com/cheolung12/cheolung.dev/assets/109952479/e5624d20-1f4f-4236-bab9-c7ceb922c8c4) </div>
+    <div className='flex-1'>![vscode7](https://github.com/cheolung12/cheolung.dev/assets/109952479/3591b245-0305-4b3e-99a4-1f1b3f37d677) </div>
+</div>
+
+5. 이제 setting.json 에 아래와 같이 코드를 작성해주면된다. (scope 하나 더 추가해서 씀)
+
+<div className='flex justify-center gap-2 w-full'>
+    <div className='flex-1'>![vscode8](https://github.com/cheolung12/cheolung.dev/assets/109952479/aa5d9f6d-b963-48a5-acc5-623068a843c3) </div>
+    <div className='flex-1'>![vscode9](https://github.com/cheolung12/cheolung.dev/assets/109952479/93b6bd04-6c9e-4d22-9d95-f8a832640183) </div>
+</div>
+
+- 색상이 잘 적용된 것을 확인할 수 있다.
+<br />
+테마를 어떤 걸 쓰냐에 따라서 코드 수정이 조금씩은 필요할거다. 중요한건 이런 방식으로 내가 원하는 scope에 디자인을 커스텀할 수 있다는 점!
+```json
+"editor.tokenColorCustomizations": {
+    "[Community Material Theme]": {
+      "textMateRules": [
+        {
+          "scope": [
+            "support.type.primitive.ts",
+            "support.type.builtin.ts"
+          ],
+          "settings": {
+            "foreground": "#FFCB6B"
+          }
+        },
+      ]
+    }
+  }
+```

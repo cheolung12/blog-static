@@ -1,0 +1,124 @@
+---
+title: 'DFS/BFS - JavaScript'
+date: '2023-11-04'
+description: 'DFS/BFS 알고리즘, 시간복잡도, 코드(js)'
+category: 'Algorithm'
+thumbnail: '/thumbnail/algorithm.png'
+---
+## 목차
+
+# DFS (Depth-First-Search)
+
+ 깊이 우선 탐색으로, 한 경로를 끝까지 탐색하고 나서 다른 경로로 이동하는 그래프 탐색 알고리즘
+
+<div className='flex justify-center'>![2.webp](https://file.notion.so/f/f/bfce75ed-33e6-453e-9850-5a60ec7181ee/fb264b80-b7b7-47c8-9705-d31db46dfa4f/2.webp?id=4ccd04b3-53b4-4f55-9eef-968abc986cf6&table=block&spaceId=bfce75ed-33e6-453e-9850-5a60ec7181ee&expirationTimestamp=1709618400000&signature=i_4x6PUDjQ4odNrNn6IWoRI2jrLR8iLXmYR3wICCLCw&downloadName=2.webp)</div>
+
+```jsx
+const graph = {
+  A: ["B", "C"],
+  B: ["A", "D"],
+  C: ["A", "E"],
+  D: ["B", "F"],
+  E: ["C","G"],
+  F: ["D","H","I"],
+  G: ["E","J","K"],
+  H: ["F","L"],
+  I: ["F", "M"],
+  J: ["G","N"],
+  K: ["G","O"],
+  L: ["H"],
+  M: ["I","P"],
+  N: ["J"],
+  O: ["K"],
+  P: ["M"]
+};
+
+const dfs = (graph, start) => {
+
+    const checked = [];    // 탐색 완료 데이터
+    const willCheck = [];  // 탐색 예정 데이터
+    
+    willCheck.push(start);
+    
+    while(willCheck.length!==0){
+      const node = willCheck.pop();  // 스택(Last In First Out)
+      if(!checked.includes(node)){   // checked가 노드를 가지고 있지 않다면 
+         checked.push(node);
+         //reverse() 제거 시 그림의 4,3,2,1 순서로 탐색     
+         willCheck.push(...graph[node].reverse());  
+      }
+   }
+    return checked;
+}
+
+console.log(dfs(graph, "A"));
+// ['A', 'B', 'D', 'F', 'H', 'L', 'I', 'M', 'P', 'C', 'E', 'G', 'J', 'N', 'K', 'O']
+```
+
+- 위 예시는 아니지만 재귀함수를 활용해서 구현하는게 더 간결하고 좋아보임
+
+```java
+const dfs = (node, visited, computers) => {
+    visited[node] = true;	// 현재 node를 방문처리 하고
+    console.log(visited);
+    for(let i = 0; i < computers.length; i++) {
+        if(computers[node][i] === 1 && !visited[i]) 	// 연결된 노드가 있고 해당 노드를 방문하지 않았다면
+            dfs(i, visited, computers);		// dfs로 방문 진행
+    }
+}
+```
+
+# BFS (Breadth-First-Search)
+
+ 너비 우선 탐색으로, 루트에서 시작하여 인접한 모든 노드를 먼저 탐색하는 그래프 탐색 알고리즘
+
+<div className='flex justify-center'>![3.webp](https://file.notion.so/f/f/bfce75ed-33e6-453e-9850-5a60ec7181ee/105d0bcb-3cee-445c-9ab0-cca29e2b2756/3.webp?id=80caffe8-a82d-45a1-a7ff-c489e7efa2af&table=block&spaceId=bfce75ed-33e6-453e-9850-5a60ec7181ee&expirationTimestamp=1709618400000&signature=07CxQT6jT6molHeYKZmC7_Kh5Hu178UPllPgXn16TOc&downloadName=3.webp)</div>
+
+```jsx
+const graph = {
+  A: ["B", "C"],
+  B: ["A", "D"],
+  C: ["A", "E"],
+  D: ["B", "F"],
+  E: ["C","G"],
+  F: ["D","H","I"],
+  G: ["E","J","K"],
+  H: ["F","L"],
+  I: ["F", "M"],
+  J: ["G","N"],
+  K: ["G","O"],
+  L: ["H"],
+  M: ["I","P"],
+  N: ["J"],
+  O: ["K"],
+  P: ["M"]
+};
+
+const bfs = (graph, start) => {
+
+    const checked = [];
+    const willCheck = [];
+    
+    willCheck.push(start);
+    
+    while(willCheck.length!==0){
+      const node = willCheck.shift(); // 큐(First In First Out)
+      if(!checked.includes(node)){
+            checked.push(node);
+					// 여기서 차이남 reverse 안함
+           willCheck.push(...graph[node]);       
+      }
+   }
+    return checked;
+}
+
+console.log(bfs(graph, "A"));
+// ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P']
+```
+
+- 탐색 속도가 DFS보다 빠르고 최단 거리를 구하는 문제에서 사용한다
+- dfs랑 비교하면 pop → shift, reverse x
+
+# 시간복잡도 ⏳
+
+DFS와 BFS는 `노드 수 + 간선 수` 만큼의 복잡도를 지닌다. 즉, <span className='red-bold'>O(n)</span>
