@@ -36,7 +36,7 @@ const Intro: FC = () => {
           <span className='font-semibold'>더 나은 사용자 경험</span>에 대하여 끊임 없이 고민하며,
         </motion.div>
         <motion.div className='text-[0.6rem] sm:text-base lg:text-lg' variants={itemVariants}>
-        <span className='font-semibold'>유지보수가 용이한 코드</span>를 작성하는 것을 좋아합니다.
+        <span className='font-semibold'>지속적인 성장</span>을 추구합니다.
         </motion.div>
         <motion.div
           className='flex gap-4 sm:gap-6 items-center text-base sm:text-2xl mt-2'
