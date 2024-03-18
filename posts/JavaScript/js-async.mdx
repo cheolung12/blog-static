@@ -1,0 +1,51 @@
+---
+title: '동기, 비동기, Callback함수'
+date: '2022-12-05'
+description: '동기식과 비동기식, 콜백함수의 정의와 용도'
+category: 'JavaScript'
+thumbnail: '/thumbnail/javascript.jpeg'
+---
+
+## 목차
+
+# 🤔 동기와 비동기?
+**동기식** : 어떤 함수를 결과가 <span className='red-bold'>끝날때까지 기다린 후</span> 다음 부분 실행 (일반적인 실행 경로)
+
+**비동기식** : 어떤 함수를 호출 후 <span className='blue-bold'>바로 다음으로 넘어감</span>, 실제로 코딩한 순서와 다르게 동작하는 코드
+
+![async](https://github.com/cheolung12/cheolung.dev/assets/109952479/b420ddf4-41b7-4dff-804a-304a4ae19594)
+
+
+# ↪️ Callback 함수
+**정의** : 함수에 <u className='highlight'>파라미터로 들어가는 함수</u>
+
+**용도** : <u className='highlight'>순차적으로</u> 실행하고 싶을 때 사용
+
+대표적인 예로 함수를 파라미터로 받는 `addEventListener()`와 `setTimeout()`등이 있다.
+
+그렇다면 정의되어 있는 함수 말고 사용자가 함수안에 함수를 넣는 콜백함수를 사용하려면 어떻게 해야할까?
+```js
+function first(parameter){
+  parameter();   // 파라미터가 함수
+}
+
+first (function(){});	// 사용할 때는 이렇게
+```
+말 그대로 함수 안에 함수를 넣어놓으면 된다
+
+좀 더 용도(순차적으로 실행)를 살린 코드 예시를 보면
+```js
+function  first(parameter){
+  console.log(1);
+  parameter();
+}
+
+function second(){
+  console.log(2);
+}
+
+first(second); 
+```
+- 실행결과는 `1 ('/n') 2`
+
+이렇게 first 함수를 여러 번 사용한다는 가정 하에 <u className='highlight'>그 뒤에 다른 기능을 순차적으로 넣고 싶다면</u> callback 함수를 활용하면 된다.
