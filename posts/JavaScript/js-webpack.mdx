@@ -1,7 +1,7 @@
 ---
 title: 'Webpack'
 date: '2024-03-19'
-description: ''
+description: 'webpack, loader, babel, plugin, devtool, bundle analyzer'
 category: 'Library'
 thumbnail: '/thumbnail/webpack.jpg'
 ---
@@ -9,7 +9,7 @@ thumbnail: '/thumbnail/webpack.jpg'
 ## 목차
 
 # 웹팩이란?
-> 오픈 소스 자바스크립트 모듈 번들러로써 **여러개로 나누어져 있는 파일들을 하난의 자바스크립트 코드로 압축하고 최적화하는 라이브러리**
+> 오픈 소스 자바스크립트 모듈 번들러로써 <span className='emphasis'>여러개로 나누어져 있는 파일들을 하나의 자바스크립트 코드로 압축하고 최적화하는 라이브러리</span>
 
 ## 웹팩의 장점
 ![bundle](https://github.com/cheolung12/cheolung.dev/assets/109952479/8af90ec5-c499-46d6-9699-298a90588bd2)
@@ -19,11 +19,11 @@ thumbnail: '/thumbnail/webpack.jpg'
 ---
 
 # 🧑🏻‍💻 웹팩 직접 만들기
-**🤔 그동안은 왜 직접 안 만들었지?** (Create-React-App)
+**🤔 그동안은 왜 직접 안 만들었지? (Create-React-App)**
 
 CRA를 활용하여 리액트를 설치하면 웹팩을 사용해서 개발환경을 생성한다. 덕분에 아무 설정없이 다른 파일에 있는 함수를 import하고 이미지를 사용하고, CSS가 바로 적용되는 효과를 볼 수 있던 것이다.
 
-## 🛠️ webpack 설치 (import 구현해보기)
+## webpack 설치 (import 구현해보기)
 웹팩이 없는 상태에서는 import가 동작을 하지 않는다.
 
 `src` 폴더 (소스 코드가 담기 폴더), `dist` 폴더(압축된 파일이 담길 폴더)를 먼저 생성
@@ -40,7 +40,7 @@ npm i -D webpack webpack-cli
     "build": "webpack --mode production" // 추가
   },
 ```
-- npm init을 하면 생성되는 package.json파일에 빌드 스크립트를 추가한다.
+- `npm init`을 하면 생성되는 package.json파일에 빌드 스크립트를 추가한다.
 - 해당 명령어 실행 시 코드 변환(압축)
 
 ### webpack 설정 파일 생성
@@ -60,21 +60,21 @@ module.exports = {
 ```
 - `npm build`로 빌드
 - `src/index.js`에 있는 파일이 빌드하면 `dist/main.js`로 변환됨 
+- 이제 js파일을 import, export를 활용하여 모듈화해서 사용할 수 있다.
+
 
 ---
 
-# webpack loader
+# 🖇️ Webpack Loader
 로더(Loader)는 웹팩이 웹 어플리케이션을 해석할 때 자바스크립트 파일이 아닌 웹 자원(HTML, CSS, Image, 폰트 등)을 변환할 수 있도록 도와주는 속성이다.
 
 ## 설치 
 ```bash
 npm i -D css-loader style-loader
 ```
-- style-loader: DOM에 스타일로 모듈 내보내기를 추가
-- css-loader: resolve된 가져오기로 CSS파일을 로드하고 CSS코드 를 반환
 
 ## css-loader
-```???.jsx
+```jsx:???.jsx
 import React from 'react';
 import './style/global.css';  // 가능
 ```
@@ -86,23 +86,62 @@ import './style/global.css';  // 가능
 - css-loader를 이용해 웹팩 의존성 트리에 추가한 후에 css에 작성한 string 값들을 style-loader를 이용하여 돔에 `<style> </style>`로 넣어준다.
 - style-loader는 css-header를 이용해서 js파일에 불러들여진 스타일 파일이 html 파일 안에 style 태그로 존재할 수 있게 해준다.
 
+## 적용
+```js:webpack.config.js
+// ...
+module: {
+        rules: [
+            // css/style loader 적용
+            {
+                test: /\.css$/i,
+                use: [
+                    'style-loader',
+                    'css-loader',
+                ]
+            },
+        ]
+}
+// ...
+```
+- <span className='red-bold'>css-loader부터 작동하고 style-loader가 작동해야 한다.</span> (sass를 사용한다면 sass-loader 먼저 실행)
 
-css0-loader부터 작동하고 style-loader가 작동해야 한다. (sass를 사용한다면 sass-loader 먼저 실행 ...)
--> webpack.config.js파일의 ~에 역순으로 넣어주면된다.
+=> webpack.config.js파일의 ~에 역순으로 넣어주면된다.
 
-
-
-test: 로더를 적용할 파일 유형 (일반적으로 정규표현식 사용)
-use: 해당 파일에 적용할 로더의 이름, 배열 안에 있는 값들의 <span className='red-bold'>역순으로 작동</span>
+- `test` : 로더를 적용할 파일 유형 (일반적으로 정규표현식 사용)
+- `use` : 해당 파일에 적용할 로더의 이름, 배열 안에 있는 값들의 <span className='red-bold'>역순으로 작동</span>
 
 ---
 
-# Webpack Caching
-웹팩 컴파일로 생성된 파일에서 변경된 내용이 없다면 브라우저는 캐시 상태를 유지하고 그대로 사용하게 된다.
+# 📄 HTML Webpack Plugin
+웹팩이 html 파일을 읽어서 html 파일을 빌드할 수 있게 해준다.
+## 설치
+```bash
+npm i -D html-webpack-plugin
+```
+## 적용
+```js:webpack.config.js
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+// ...
+    plugins: [
+            // html 플러그인
+            new HtmlWebpackPlugin({
+                // template에 있는 index.html이 빌들르 통해 output경로에 있는 index.html로 만들어짐
+                filename: 'index.html',
+                template: 'src/index.html'
+            }),
+        ],
+// ...
+```
+- 적용 후 빌드하면 html 파일도 dist 폴더에 변환이 되어있는걸 확인할 수 있다.
 
-여기서 브라우저가 변경 사항을 확인하는 방법은 파일 이름이다.
+---
 
-=> 파일을 생성할 때 해쉬 값을 줘서 브라우저에게 파일이 변했다는 것을 알려주자!
+# 💽 Webpack Caching
+웹팩 컴파일로 생성된 파일에서 <u>변경된 내용이 없다면 브라우저는 캐시 상태를 유지하고 그대로 사용하게 된다.</u>
+
+여기서 브라우저가 변경 사항을 확인하는 방법은 <u>파일 이름</u>이다.
+
+=> 파일을 생성할 때 <span className='highlight'>해쉬 값을 줘서 브라우저에게 파일이 변했다는 것을 알려주자!</span>
 
 => webpack.config.js의 output 속성에 filename을 변경하는 방법을 사용
 
@@ -118,9 +157,8 @@ use: 해당 파일에 적용할 로더의 이름, 배열 안에 있는 값들의
 ![hash](https://github.com/cheolung12/cheolung.dev/assets/109952479/860bb82a-10dc-41c9-be6b-f1afada85245)
 - 파일명이 해시값과 함께 생성된 것을 확인해볼 수 있다.
 - 변경 사항이 있을 경우만 빌드 시 새 파일이 생성된다.
-<br />
 
-**🤔 이전 해시 파일을 지우려면?**
+### 🤔 이전 해시 파일을 지우려면?
 
 변경 사항은 계속해서 생길것이고, 파일이 여러개 쌓이는건 좋지 않다. 
 => `clean: true` 옵션 추가
@@ -137,7 +175,7 @@ use: 해당 파일에 적용할 로더의 이름, 배열 안에 있는 값들의
 
 ---
 
-# Webpack Development Server
+# 🌐 Webpack Development Server
 라이브서버를 사용하지 않고 서버를 켜보자 (리액트처럼)
 1. 설치
 ```bash
@@ -170,13 +208,196 @@ npm i -D webpack-dev-server
 > 파일 압축 및 압축 해제에 사용되는 파일 형식으로, 파일 크기를 더 작게 만들어 더 빠른 네트워크 전송을 가능하게 하는 Deflate 알고리즘을 기반으로 한다. 일반적으로 웹 서버와 최신 브라우저에서 지원된다.
 ---
 
+# 🧭 Devtool
+이 옵션은 소스 맵(Source Map)이 생성되는지 여부와 생성 방법을 제어한다.
 
-# HTML Webpack Plugin
-웹팩 플러그인은 웹팩으로 변환한 파일에 추가적인 기능을 더하고 싶을때 사용하는 것
-HTML Webpack Plugin : 웹팩이 html 파일을 읽어서 html 파일을 빌드할 수 있게 해준다.
+## Source Map
+
+웹 사이트를 쉽게 성능 향상시킬 수 있는 법중 하나는 <span className='blue-bold'>JS 및 CSS 파일을 결합하고 압축하는 것</span>
+
+하지만 이러한 <span className='red-bold'>압축파일에서 코드를 디버그 하는 것은 매우 어렵다.</span> (우리가 직접 짠 코드도 아니고, 압축 되어 있기 때문에 코드가 복잡함)
+![sourcemap](https://github.com/cheolung12/cheolung.dev/assets/109952479/391fb52a-17f1-418e-9802-b277b0af84f6)
+
+=> <span className='highlight'>소스 맵을 활용해서 압축파일을 디버그 할 수 있다!</span>
+
+소스맵은 압축 파일 내의 코드를 소스 파일의 원래 위치로 다시 매핑하는 방법을 제공한다.
+
+## 적용
+```js:webpack.config.js
+  // ...
+  devtool: 'source-map',
+  // ...
+```
+![map](https://github.com/cheolung12/cheolung.dev/assets/109952479/e19ed9cc-f632-4f08-be82-3eaa1fabccb8)
+- 빌드를 하고 나면 빌드한 파일을 원본파일과 연결해주는 map 파일이 생성되고 브라우저에서도 원본 소스가 보이게 된다.
+- 추가 적인 옵션은 아래 공식 문서 참고
+
+    [https://webpack.js.org/configuration/devtool/](https://webpack.js.org/configuration/devtool/)
+
+---
+
+# 🔄 Babel Loader
+
+## 바벨이란?
+> 최신 자바스크립트 문법을 지원하지 않는 브라우저들을 위해서 최신 자바스크립트 문법을 구형 브라우저에서도 돌아갈수 있게 변환 시켜주는 라이브러리
+
+이 바벨을 <u className='highlight'>웹팩으로 파일을 번들링할 때도 사용할 수 있게 해주는 것이 babel-loader이다.</u>
+
+## 설치
 ```bash
-npm i -D html-webpack-plugin
+npm i -D babel-loader @babel/core @babel/preset-env
 ```
 
-# 바벨이란?
-최신자바스크립트 문법을 지원하지 않는 브라우저들을 위해서 최신 자바스크립트 문법을 구형 브라우저에서도 돌아갈수 있게 변환 시켜주는 라이브러리
+## 적용
+```js:webpack.config.js
+// ...
+    module: {
+            rules: [
+                // ...
+                // babel-loader 적용
+                {
+                    test: /\.js$/,  // js를 바꿔줄거니까
+                    exclude: /node_modules/,  // node_modules 제외
+                    use: {
+                        loader: 'babel-loader',
+                        options: {
+                            presets: ['@babel/preset-env']
+                        }
+                    }
+                }
+            ]
+        },
+        // ...
+```
+
+---
+
+# 🏞️ Resource Asset
+현재까지의 웹팩 설정으로는 png, svg, jpeg등의 이미지를 불러올 수 없다.
+
+ex) `import Image from ./assets/~~~.png` 
+
+config 파일에 설정을 추가해서 해결하자
+```js:webpack.config.js
+    // ...
+    output: {
+        // ...
+        assetModuleFilename: '[name][extension]' // image가 빌드될때 원래 이름으로
+    },
+    module: {
+        rules: [
+            // ...
+            {
+                test: /\.(png|svg|jpg|jpeg|gif)$/,  // 허용할 확장자명들
+                type: 'asset/resource'  
+            }
+        ]
+    },
+    // ...
+```
+
+---
+
+
+# 🔎 Bundle Analyzer
+번들 분석 도구이다.
+- 번들 내부에 무엇이 있는지 파악
+- 크기를 가장 많이 차지하는 모듈 알아보기
+- 최적화
+- 축소된 번들을 지원된다
+- gzipped 크기를 확인
+
+## 설치
+```bash
+npm i -D webpack-bundle-analyzer
+```
+
+## 적용
+```js:webpack.config.js
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
+// ...
+    plugins: [
+           // ...
+           new BundleAnalyzerPlugin()
+        ],
+// ...
+```
+- 이 후 `npm run dev`로 실행 시 analyzer가 같이 열린다.
+![analyzer](https://github.com/cheolung12/cheolung.dev/assets/109952479/4c4146dc-7cf3-461d-b470-4bec6214b189)
+
+---
+
+# 💻 모든 코드 
+## 설치 코드
+```bash
+npm init -y
+npm i -D webpack webpack-cli css-loader style-loader webpack-dev-server babel-loader @babel/core @babel/preset-env webpack-bundle-analyzer
+```
+
+## 적용 코드 (webpack.config.js)
+```js:webpack.config.js
+const path = require('path'); // nodejs에 내장되어있음.
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const BundleAnalyzerPlugin =
+  require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+
+module.exports = {
+  mode: 'development',
+  // 시작점 (소스코드)
+  entry: path.resolve(__dirname, 'src/index.js'),
+  // 결과물
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: '[name].[contenthash].js', // 해시값으로 파일 저장
+    clean: true, // 이전 해시 파일 삭제
+    assetModuleFilename: '[name][extension]', // image가 빌드될때 원래 이름으로
+  },
+  module: {
+    rules: [
+      // css/style loader 적용
+      {
+        test: /\.css$/i,
+        use: ['style-loader', 'css-loader'],
+      },
+      // babel-loader 적용
+      {
+        test: /\.js$/, // js를 바꿔줄거니까
+        exclude: /node_modules/, // node_modules 제외
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env'],
+          },
+        },
+      },
+      // resource asset
+      {
+        test: /\.(png|svg|jpg|jpeg|gif)$/, // 허용할 확장자명들
+        type: 'asset/resource',
+      },
+    ],
+  },
+  plugins: [
+    // html 플러그인
+    new HtmlWebpackPlugin({
+      // template에 있는 index.html이 빌들르 통해 output경로에 있는 index.html로 만들어짐
+      filename: 'index.html',
+      template: 'src/index.html',
+    }),
+    // bundle analyzer 플러그인
+    new BundleAnalyzerPlugin(),
+  ],
+  // development server
+  devServer: {
+    static: {
+      directory: path.join(__dirname, 'dist'), // output 경로
+    },
+    compress: true, // 제공되는 모든 항목에 대해 gzip압축 활성화
+    port: 3001, // 실행할 포트번호
+    open: true, // 서버 시작 후 바로 브라우저 열기
+  },
+  // devtools
+  devtool: 'source-map',
+};
+
+```
