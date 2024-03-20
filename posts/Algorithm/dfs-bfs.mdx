@@ -11,9 +11,9 @@ thumbnail: '/thumbnail/algorithm.png'
 
  깊이 우선 탐색으로, 한 경로를 끝까지 탐색하고 나서 다른 경로로 이동하는 그래프 탐색 알고리즘
 
-<div className='flex justify-center'>![2.webp](https://file.notion.so/f/f/bfce75ed-33e6-453e-9850-5a60ec7181ee/fb264b80-b7b7-47c8-9705-d31db46dfa4f/2.webp?id=4ccd04b3-53b4-4f55-9eef-968abc986cf6&table=block&spaceId=bfce75ed-33e6-453e-9850-5a60ec7181ee&expirationTimestamp=1709618400000&signature=i_4x6PUDjQ4odNrNn6IWoRI2jrLR8iLXmYR3wICCLCw&downloadName=2.webp)</div>
+<div className='flex justify-center'>![dfs](https://github.com/cheolung12/cheolung.dev/assets/109952479/4d62250b-5b55-4a80-846b-53ed94aadb43)</div>
 
-```jsx
+```js
 const graph = {
   A: ["B", "C"],
   B: ["A", "D"],
@@ -54,10 +54,10 @@ const dfs = (graph, start) => {
 console.log(dfs(graph, "A"));
 // ['A', 'B', 'D', 'F', 'H', 'L', 'I', 'M', 'P', 'C', 'E', 'G', 'J', 'N', 'K', 'O']
 ```
+- **스택** 또는 **재귀함수** 로 구현
+- 재귀함수를 활용해서 구현하면 더 간결하다.AbortController
 
-- 위 예시는 아니지만 재귀함수를 활용해서 구현하는게 더 간결하고 좋아보임
-
-```java
+```js
 const dfs = (node, visited, computers) => {
     visited[node] = true;	// 현재 node를 방문처리 하고
     console.log(visited);
@@ -68,13 +68,16 @@ const dfs = (node, visited, computers) => {
 }
 ```
 
+---
+
+
 # BFS (Breadth-First-Search)
 
  너비 우선 탐색으로, 루트에서 시작하여 인접한 모든 노드를 먼저 탐색하는 그래프 탐색 알고리즘
 
-<div className='flex justify-center'>![3.webp](https://file.notion.so/f/f/bfce75ed-33e6-453e-9850-5a60ec7181ee/105d0bcb-3cee-445c-9ab0-cca29e2b2756/3.webp?id=80caffe8-a82d-45a1-a7ff-c489e7efa2af&table=block&spaceId=bfce75ed-33e6-453e-9850-5a60ec7181ee&expirationTimestamp=1709618400000&signature=07CxQT6jT6molHeYKZmC7_Kh5Hu178UPllPgXn16TOc&downloadName=3.webp)</div>
+<div className='flex justify-center'>![bfs](https://github.com/cheolung12/cheolung.dev/assets/109952479/2bf56e05-ad09-4cbb-81af-d8c84dffbc45)</div>
 
-```jsx
+```js
 const graph = {
   A: ["B", "C"],
   B: ["A", "D"],
@@ -117,6 +120,7 @@ console.log(bfs(graph, "A"));
 ```
 
 - 탐색 속도가 DFS보다 빠르고 최단 거리를 구하는 문제에서 사용한다
+- **큐** 를 이용해서 구현한다
 - dfs랑 비교하면 pop → shift, reverse x
 
 # 시간복잡도 ⏳
