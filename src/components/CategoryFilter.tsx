@@ -18,12 +18,12 @@ const CategoryFilter: FC<CategoryFilterProps> = ({ type, categories }) => {
   );
 
   return (
-    <div className={`flex ${type === 'Algorithm' && 'lg:justify-center'} justify-start w-full gap-3 sm:gap-5 p-4 mb-2 overflow-auto`}>
+    <div className={`flex ${type === 'Algorithm' && 'lg:justify-center'} justify-start w-full gap-3 sm:gap-5 p-4 mb-2 overflow-auto px-2 bg-slate-50 rounded-md hide-scrollbar border-x-8 border-x-slate-100`}>
       {categories.map((category) => (
         <div
           key={category}
-          className={`flex gap-1.5 items-center border rounded-lg px-4 py-2 cursor-pointer hover:scale-105 transition shadow-sm text-sm sm:text-base  ${
-            category === selected && 'bg-slate-100 border-2 border-slate-300'
+          className={`flex gap-1.5 items-center border rounded-lg px-4 py-2 cursor-pointer hover:scale-105 transition shadow-md text-sm sm:text-base bg-white  ${
+            category === selected && 'border-signature3 border-[2.5px]'
           } `}
           onClick={() => updateCategory(category)}
         >

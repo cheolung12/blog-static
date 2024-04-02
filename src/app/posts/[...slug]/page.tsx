@@ -39,7 +39,7 @@ export default function Posts({ params }) {
     <AnimationProvider className='flex flex-col pb-20 gap-7 mx-5 mt-6'>
       <h1 className='text-5xl font-bold mb-1'>{post.title}</h1>
       <div className='flex flex-row items-center justify-between -mb-2'>
-        <div className='rounded-md bg-slate-800 px-2 py-1 text-md text-white'>
+        <div className='rounded-md bg-signature2 px-2 py-1 text-md text-white'>
           {post.category}
         </div>
         <div className='text-md'>
