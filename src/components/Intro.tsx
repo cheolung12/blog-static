@@ -24,7 +24,7 @@ const Intro: FC = () => {
             @cheolung12
           </div>
           <div className='text-slate-500 mx-1 text-sm sm:text-base'>
-            Do what scares you until it doesn't.
+            Do what scares you until it doesn&apos;t.
           </div>
           <div className='flex gap-4 text-signature font-semibold mx-1 text-sm sm:text-base'>
             <Link href='https://github.com/cheolung12' target='_blank' className='hover:drop-shadow-xl'>
