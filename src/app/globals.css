@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+ background-color: #ffffffef; 
+}
 /* 글 작성시 변수 활용하여 글자 색 지정 */
 :root {
   --font-blue: #5090B5;

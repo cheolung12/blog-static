@@ -14,7 +14,11 @@ const config: Config = {
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
       colors: {
-       signature: '#075ce4'
+        signature: '#4b4ded',
+        signature2: '#7879f1',
+        signature3: '#a5a6f6',
+        signature4: '#efeffd',
+        // signature: '#075ce4'
       },
       typography: (theme) => ({
         DEFAULT: {
@@ -23,7 +27,7 @@ const config: Config = {
             maxWidth: 'none',
             h1: {
               fontSize: '2rem',
-              marginTop: '4rem'
+              marginTop: '4rem',
             },
             'h1,h2,h3,h4': {
               'scroll-margin-top': theme('spacing.32'),
