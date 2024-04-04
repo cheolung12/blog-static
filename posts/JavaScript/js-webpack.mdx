@@ -16,7 +16,7 @@ thumbnail: '/thumbnail/webpack.jpg'
 1. 여러 파일의 모든 자바스크립트 코드를 압축하여 최적화 할 수 있기 때문에 로딩에 대한 네트워크 비용을 줄일 수 있다.
 2. 모듈 단위로 개발이 가능하며, 가독성과 유지보수가 쉽다.
 
----
+
 
 # 🧑🏻‍💻 웹팩 직접 만들기
 **🤔 그동안은 왜 직접 안 만들었지? (Create-React-App)**
@@ -63,7 +63,7 @@ module.exports = {
 - 이제 js파일을 import, export를 활용하여 모듈화해서 사용할 수 있다.
 
 
----
+
 
 # 🖇️ Webpack Loader
 로더(Loader)는 웹팩이 웹 어플리케이션을 해석할 때 자바스크립트 파일이 아닌 웹 자원(HTML, CSS, Image, 폰트 등)을 변환할 수 있도록 도와주는 속성이다.
@@ -110,7 +110,7 @@ module: {
 - `test` : 로더를 적용할 파일 유형 (일반적으로 정규표현식 사용)
 - `use` : 해당 파일에 적용할 로더의 이름, 배열 안에 있는 값들의 <span className='red-bold'>역순으로 작동</span>
 
----
+
 
 # 📄 HTML Webpack Plugin
 웹팩이 html 파일을 읽어서 html 파일을 빌드할 수 있게 해준다.
@@ -134,7 +134,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 ```
 - 적용 후 빌드하면 html 파일도 dist 폴더에 변환이 되어있는걸 확인할 수 있다.
 
----
+
 
 # 💽 Webpack Caching
 웹팩 컴파일로 생성된 파일에서 <u>변경된 내용이 없다면 브라우저는 캐시 상태를 유지하고 그대로 사용하게 된다.</u>
@@ -173,7 +173,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 // ...
 ```
 
----
+
 
 # 🌐 Webpack Development Server
 라이브서버를 사용하지 않고 서버를 켜보자 (리액트처럼)
@@ -206,7 +206,7 @@ npm i -D webpack-dev-server
 ## gzip 압축
 위에서 `compress: true`로 설정했을때 gzip압축을 한다 했는데 이게 뭘까?
 > 파일 압축 및 압축 해제에 사용되는 파일 형식으로, 파일 크기를 더 작게 만들어 더 빠른 네트워크 전송을 가능하게 하는 Deflate 알고리즘을 기반으로 한다. 일반적으로 웹 서버와 최신 브라우저에서 지원된다.
----
+
 
 # 🧭 Devtool
 이 옵션은 소스 맵(Source Map)이 생성되는지 여부와 생성 방법을 제어한다.
@@ -234,7 +234,7 @@ npm i -D webpack-dev-server
 
     [https://webpack.js.org/configuration/devtool/](https://webpack.js.org/configuration/devtool/)
 
----
+
 
 # 🔄 Babel Loader
 
@@ -270,7 +270,7 @@ npm i -D babel-loader @babel/core @babel/preset-env
         // ...
 ```
 
----
+
 
 # 🏞️ Resource Asset
 현재까지의 웹팩 설정으로는 png, svg, jpeg등의 이미지를 불러올 수 없다.
@@ -296,7 +296,7 @@ config 파일에 설정을 추가해서 해결하자
     // ...
 ```
 
----
+
 
 
 # 🔎 Bundle Analyzer
@@ -325,7 +325,7 @@ const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPl
 - 이 후 `npm run dev`로 실행 시 analyzer가 같이 열린다.
 ![analyzer](https://github.com/cheolung12/cheolung.dev/assets/109952479/4c4146dc-7cf3-461d-b470-4bec6214b189)
 
----
+
 
 # 💻 모든 코드 
 ## 설치 코드

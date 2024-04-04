@@ -14,7 +14,6 @@ thumbnail: '/thumbnail/nextjs.png'
 
 게시글 상세 페이지에서 썸네일 이미지 로딩 시 layout shift 현상이 발생하는 것을 확인하였다. (Fast 3G)
 
----
 
 # 원인
 Next.js의 Image 컴포넌트를 사용하고 있었지만, 이미지를 public폴더에서 동적으로 불러오고 있기 때문에 너비와 높이를 따로 지정하지 않고 있었다.
@@ -29,7 +28,6 @@ Next.js의 Image 컴포넌트를 사용하고 있었지만, 이미지를 public�
 />
 ```
 
----
 
 # 해결
 > Next.js의 Image컴포넌트는 이미지가 로딩되기 전에 보여줄 placeholder 속성을 지정할 수 있다.
@@ -113,7 +111,7 @@ export default ImgWithPlaceholder;
 
 ![CLS2](https://github.com/cheolung12/cheolung.dev/assets/109952479/47637dec-c736-4a06-bedc-717023f08020)
 
----
+
 
 # + 에러 해결
 코드를 수정하고 실행을 하면 이런 에러가 발생할 수도 있다. (호환성 문제) 
@@ -129,7 +127,7 @@ sharp라이브러리를 다운그레이드 해주면 해결할 수 있다.
 }
 ```
 
----
+
 
 **참고 자료**
 
