@@ -26,7 +26,7 @@ export default function ScrollProgressBar() {
           z-index: 50;
           top: 0px;
           left: 0px;
-          height: 6px;
+          height: 4px;
           border-radius: 0px 2px 0px 0px;
           background: linear-gradient(90deg, #7879f1, #4b4ded);
         }

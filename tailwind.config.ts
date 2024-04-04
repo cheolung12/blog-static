@@ -23,11 +23,16 @@ const config: Config = {
       typography: (theme) => ({
         DEFAULT: {
           css: {
-            fontSize: '1.125rem',
+            fontSize: '1.1rem',
             maxWidth: 'none',
             h1: {
-              fontSize: '2rem',
+              fontSize: '1.8rem',
               marginTop: '4rem',
+              paddingBottom: '1rem',
+              borderBottom: '1.2px solid #D1D1D1'
+            },
+            h2: {
+              marginTop: '2rem',
             },
             'h1,h2,h3,h4': {
               'scroll-margin-top': theme('spacing.32'),
@@ -40,7 +45,7 @@ const config: Config = {
                 content: '"" !important',
               },
               backgroundColor: theme('colors.gray.100'),
-              color: theme('colors.red.500'),
+              color: '#4b4ded',
               fontWeight: '550',
               padding: theme('spacing.1'),
               borderRadius: theme('borderRadius.DEFAULT'),

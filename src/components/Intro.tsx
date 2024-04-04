@@ -7,7 +7,7 @@ import { FC } from 'react';
 const Intro: FC = () => {
   return (
     <>
-      <div className='flex justify-center items-center w-full mt-12 mb-8 sm:mb-12'>
+      <div className='flex justify-center items-center w-full mt-8 mb-8 sm:mb-12'>
         <div className='border overflow-hidden mx-auto sm:mx-12 mr-2.5 my-0 sm:w-36 sm:h-36 w-24 h-24 rounded-full relative'>
           <Image
             className='absolute inset-0 object-cover w-full h-full'
