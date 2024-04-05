@@ -16,7 +16,7 @@ const Header: FC = () => {
         className={`flex h-16 py-2 mx-auto w-[375px] sm:w-[700px] lg:w-[840px] bg-white items-center justify-between `}
       >
         <Link href='/'>
-          <h1 className='text-base sm:text-2xl font-bold lg:text-3xl'>
+          <h1 className='text-base sm:text-2xl font-bold lg:text-[1.7rem]'>
             cheolung.<span className='text-signature'>dev</span>
           </h1>
         </Link>

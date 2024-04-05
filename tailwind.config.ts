@@ -27,7 +27,7 @@ const config: Config = {
             maxWidth: 'none',
             h1: {
               fontSize: '1.8rem',
-              marginTop: '4rem',
+              marginTop: '4.4rem',
               paddingBottom: '1rem',
               borderBottom: '1.2px solid #D1D1D1'
             },
@@ -45,7 +45,7 @@ const config: Config = {
                 content: '"" !important',
               },
               backgroundColor: theme('colors.gray.100'),
-              color: '#4b4ded',
+              color: '#5456EB',
               fontWeight: '550',
               padding: theme('spacing.1'),
               borderRadius: theme('borderRadius.DEFAULT'),
