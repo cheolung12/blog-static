@@ -56,7 +56,7 @@ export default function Posts({ params }) {
         className='h-auto w-full mb-8'
       /> */}
 
-      <div className='prose mb-12'>
+      <div className='prose mb-12 sm:text-[1rem] text-[0.5rem]'>
         <MDXComponent className='min-w-full' />
       </div>
 

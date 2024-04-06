@@ -23,7 +23,7 @@ const config: Config = {
       typography: (theme) => ({
         DEFAULT: {
           css: {
-            fontSize: '1.1rem',
+            fontSize: '1rem',
             maxWidth: 'none',
             h1: {
               fontSize: '1.8rem',
