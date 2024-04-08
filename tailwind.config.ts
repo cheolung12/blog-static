@@ -32,7 +32,7 @@ const config: Config = {
               borderBottom: '1.2px solid #D1D1D1'
             },
             h2: {
-              marginTop: '2rem',
+              marginTop: '2.2rem',
             },
             'h1,h2,h3,h4': {
               'scroll-margin-top': theme('spacing.32'),
