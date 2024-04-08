@@ -1,0 +1,76 @@
+---
+title: 'React Query (Tanstack Query)'
+date: '2024-04-08'
+description: '그니까 쿼리가 뭔데요. 데이터 받아오는거?'
+category: 'Library'
+thumbnail: '/thumbnail/react-query.png'
+---
+
+## 목차
+
+
+# React-Query(Tanstack-Query)란?
+> 리액트에서 서버에 데이터를 요청하거나 업데이트 하는작업, 데이터 캐싱 작업 등을 쉽게 처리할 수 있도록 도와주는 라이브러리.
+
+다시 말해, <u className='highlight'>리액트에서 서버 상태를 관리하는데 도움을 주는 라이브러리</u> 이다.
+
+# 왜 사용할까? 🤔
+![state](https://github.com/cheolung12/cheolung.dev/assets/109952479/f01b9ea8-d54b-4e33-bdd4-a3727747c0b7)
+
+프론트엔드에서는 대부분 상태 관리 라이브러리를 사용하며, 이를 활용하여 store에 클라이언트 상태와 서버 상태를 함께 담아 놓는 경우가 대부분이다.
+
+<span className='blue-bold'>클라이언트 상태</span> : useState 값, toast, modal등 UI 관련 상태
+
+<span className='green-bold'>서버 상태</span> : 서버에서 가져오는 데이터
+
+react-query를 사용하여 <u className='highlight'>클라이언트 상태와 서버 상태를 분리해서 관리하자.</u> 
+
+ex) client state → 상태 관리 라이브러리로 관리, server state → react-query로 관리
+
+
+# 캐싱 라이프 사이클 
+
+## Stale Time & GC Time
+**1. staleTime**
+
+<u className='red-bold'>데이터가 오래된 상태로 유지되는 시간,</u>  staleTime이 지나기 전까지는 이전 요청에서 받은 캐시된 데이터를 사용한다.
+
+staletime이 지나면 상태가 fresh에서 stale로 변하며, 새로운 데이터를 가져오기 시작한다. (refetch)
+
+**2. gcTime**
+
+<u className='red-bold'>데이터가 캐시에 저장되는 시간</u>, gcTime이 지나면 쿼리 결과를 캐시에서 제거한다.
+<br />
+## 캐싱 동작 원리
+![cache-life-cycle](https://github.com/cheolung12/cheolung.dev/assets/109952479/40700dd4-6adf-4470-a428-726f8b1ac850)
+1. `A`라는 queryKey를 가진 A 쿼리 인스턴스가 `mount`됨 (get 요청)
+2. 네트워크에서 데이터 fetch하고, 불러온 데이터는 A라는 queryKey로 `캐싱`함
+3. 이 데이터는 `fresh`상태에서 `staleTime(기본값 0)` 이후 `stale` 상태로 변경됨
+4. A 쿼리 인스턴스가 `unmount`됨
+5. 캐시는 `gcTime(기본값 5min)` 만큼 유지되다가 `가비지 콜렉터(GC)`로 수집됨
+6. 만일, gcTime 지나기 전이고, A 쿼리 인스턴스가 `fresh` 상태라면, 데이터를 가져오는 동안 캐싱한 데이터를 보여주고, 데이터를 가져오면 캐시에 새로운 데이터가 채워진다.
+
+
+
+# 상황에 맞게 사용해보자
+- 기본적인 CRUD : R ⇒ `useQuery` , CUD ⇒ `useMutation`
+- 데이터를 미리 받아서 캐싱해 놓고 싶다. ⇒ `Prefetching`
+
+    ex) 페이지네이션에서 페이지1 or 2로 이동했을 때 페이지3의 데이터를 미리 받아 놓는다. (UX에 좋은 영향)
+- 무한스크롤을 구현할 때 편리하게 데이터를 받아오고 싶다. ⇒ `Infinite Queries`
+- 요청을 완료하는데 시간이 오래 걸린다고 가정할 때, 사용자가 취소 버튼을 클릭하여 요청을 중지하게 하고 싶다. ⇒ `cancleQueries`
+- 게시판 목록에서 어떤 게시글을 작성하거나 제거했을 때 화면에 보여주는 게시판 목록을 실시간으로 최신화 하고 싶다. ⇒ `invalidateQueries` or `setQueryData`
+
+    이는 낙관적 업데이트시에도 이용된다.
+
+# 마치며
+react-query에는 정말 많은 기능들이 있다. 
+
+이 기능들을 언제, 어떻게 사용할지 막막하다면 [튜토리얼 리포지토리](https://github.com/ssi02014/react-query-tutorial)를 보면서 하나하나 사용하며 익히는 방법도 추천한다. (devtools 활용 필수)
+
+
+<br />
+**참고 자료**
+- https://tanstack.com/query/latest/docs/framework/react/overview
+- https://velog.io/@jay/10-minute-react-query-concept
+- https://github.com/ssi02014/react-query-tutorial
