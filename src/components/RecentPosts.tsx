@@ -1,12 +1,13 @@
 'use client';
 
-import { initialSortedPosts } from '@/lib/store';
+import { useCategoryStore } from '@/lib/store';
 import { FC } from 'react';
 import AnimationProvider from './AnimationProvider';
 import PostList from './PostList';
 
 const RecentPosts: FC = () => {
-  const recentPosts = initialSortedPosts.slice(0, 5);
+  const recentPosts = useCategoryStore((state) => state.posts).slice(0, 5);
+  // const recentPosts = initialSortedPosts.slice(0, 5);
 
   return (
     <AnimationProvider className={`mt-8 sm:mt-12`}>
