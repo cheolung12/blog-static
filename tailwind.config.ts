@@ -26,10 +26,9 @@ const config: Config = {
             fontSize: '1rem',
             maxWidth: 'none',
             h1: {
-              fontSize: '1.8rem',
               marginTop: '4.4rem',
               paddingBottom: '1rem',
-              borderBottom: '1.2px solid #D1D1D1'
+              borderBottom: '1.2px solid #D1D1D1',
             },
             h2: {
               marginTop: '2.2rem',

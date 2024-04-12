@@ -43,12 +43,12 @@ staletime이 지나면 상태가 fresh에서 stale로 변하며, 새로운 데�
 <br />
 ## 캐싱 동작 원리
 ![cache-life-cycle](https://github.com/cheolung12/cheolung.dev/assets/109952479/40700dd4-6adf-4470-a428-726f8b1ac850)
-1. `A`라는 queryKey를 가진 A 쿼리 인스턴스가 `mount`됨 (get 요청)
-2. 네트워크에서 데이터 fetch하고, 불러온 데이터는 A라는 queryKey로 `캐싱`함
-3. 이 데이터는 `fresh`상태에서 `staleTime(기본값 0)` 이후 `stale` 상태로 변경됨
-4. A 쿼리 인스턴스가 `unmount`됨
-5. 캐시는 `gcTime(기본값 5min)` 만큼 유지되다가 `가비지 콜렉터(GC)`로 수집됨
-6. 만일, gcTime 지나기 전이고, A 쿼리 인스턴스가 `fresh` 상태라면, 데이터를 가져오는 동안 캐싱한 데이터를 보여주고, 데이터를 가져오면 캐시에 새로운 데이터가 채워진다.
+1. <span className='blue-bold'>A</span> 라는 queryKey를 가진 A 쿼리 인스턴스가 <span className='green-bold'>mount</span>됨 (get 요청)
+2. 네트워크에서 데이터 fetch하고, 불러온 데이터는 A라는 queryKey로 <span className='violet-bold'>캐싱</span>함
+3. 이 데이터는 fresh 상태에서  <span className='yellow-bold'>staleTime</span>(기본값 0)  이후  stale 상태로 변경됨
+4. A 쿼리 인스턴스가 <span className='red-bold'>unmount</span>됨
+5. 캐시는 <span className='yellow-bold'>gcTime</span>(기본값 5min) 만큼 유지되다가 가비지 콜렉터(GC) 로 수집됨
+6. 만일, gcTime 지나기 전이고, A 쿼리 인스턴스가 fresh 상태라면, 데이터를 가져오는 동안 캐싱한 데이터를 보여주고, 데이터를 가져오면 캐시에 새로운 데이터가 채워진다.
 
 
 
@@ -66,7 +66,7 @@ staletime이 지나면 상태가 fresh에서 stale로 변하며, 새로운 데�
 # 마치며
 react-query에는 정말 많은 기능들이 있다. 
 
-이 기능들을 언제, 어떻게 사용할지 막막하다면 [튜토리얼 리포지토리](https://github.com/ssi02014/react-query-tutorial)를 보면서 하나하나 사용하며 익히는 방법도 추천한다. (devtools 활용 필수)
+공식문서가 익숙하지 않다면, [튜토리얼 리포지토리](https://github.com/ssi02014/react-query-tutorial)를 보면서 하나하나 사용하며 익히는 방법을 추천한다. (devtools 활용 필수)
 
 
 <br />

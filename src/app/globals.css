@@ -86,6 +86,16 @@ body {
   margin-bottom: 2rem;
 }
 
+.prose h1:not(.not-prose, .not-prose *) {
+  font-size: 1.8rem; /* Default font size for larger screens */
+}
+
+@media (max-width: 768px) {
+  .prose h1:not(.not-prose, .not-prose *) {
+      font-size: 1rem; /* Font size for smaller screens */
+  }
+}
+
 /* anchor */
 .prose .anchor {
   @apply invisible absolute no-underline;
@@ -103,4 +113,8 @@ body {
 .anchor:hover,
 .prose *:hover > .anchor {
   @apply visible;
+}
+
+.h1-small {
+  font-size: 2rem; 
 }
